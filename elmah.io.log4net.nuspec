@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <version>$version$</version>
+    <authors>elmah.io</authors>
+    <owners />
+    <dependencies>
+      <dependency id="log4net" version="2.0.0" />
+      <dependency id="elmah.io.client" version="2.0.24" />
+    </dependencies>
+    <id>elmah.io.log4net</id>
+    <title>elmah.io.log4net</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>log4net appender for elmah.io</description>
+    <projectUrl>https://github.com/elmahio/elmah.io.log4net</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/5c4cb3646528821117abde6d2d5ee22d?s=32</iconUrl>
+  </metadata>
+  <files>
+    <file src="elmah.io.log4net\bin\$Configuration$\elmah.io.log4net.dll" target="lib\net40\elmah.io.log4net.dll" />
+  </files>
+</package>
