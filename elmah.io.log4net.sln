@@ -7,11 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "elmah.io.log4net", "elmah.i
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "elmah.io.log4net.console", "elmah.io.log4net.console\elmah.io.log4net.console.csproj", "{62B36FF2-A7FA-4E1E-8207-EF18EE84275B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C80FF727-456A-4024-B36D-D76A5A6D9636}"
-	ProjectSection(SolutionItems) = preProject
-		elmah.io.log4net.nuspec = elmah.io.log4net.nuspec
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
