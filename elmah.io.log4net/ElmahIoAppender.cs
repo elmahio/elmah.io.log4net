@@ -51,7 +51,7 @@ namespace Elmah.Io.Log4Net
         private string Type(LoggingEvent loggingEvent)
         {
             if (loggingEvent.ExceptionObject == null) return null;
-            return loggingEvent.ExceptionObject.GetType().Name;
+            return loggingEvent.ExceptionObject.GetType().FullName;
         }
 
         private string Hostname(LoggingEvent loggingEvent)
