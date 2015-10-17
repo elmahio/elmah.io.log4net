@@ -5,12 +5,13 @@ using Elmah.Io.Client;
 using log4net.Appender;
 using log4net.Core;
 using log4net.Util;
+using ILogger = Elmah.Io.Client.ILogger;
 
 namespace Elmah.Io.Log4Net
 {
     public class ElmahIoAppender : AppenderSkeleton
     {
-        private Logger _logger;
+        public ILogger Logger;
         private Guid _logId;
 
         public string LogId
@@ -26,9 +27,9 @@ namespace Elmah.Io.Log4Net
 
         protected override void Append(LoggingEvent loggingEvent)
         {
-            if (_logger == null)
+            if (Logger == null)
             {
-                _logger = new Logger(_logId);
+                Logger = new Logger(_logId);
             }
 
             var message = new Message(loggingEvent.RenderedMessage)
@@ -36,10 +37,27 @@ namespace Elmah.Io.Log4Net
                 Severity = LevelToSeverity(loggingEvent.Level),
                 DateTime = loggingEvent.TimeStamp.ToUniversalTime(),
                 Detail = loggingEvent.ExceptionObject != null ? loggingEvent.ExceptionObject.ToString() : null,
-                Data = PropertiesToData(loggingEvent.Properties)
+                Data = PropertiesToData(loggingEvent.Properties),
+                Application = loggingEvent.Domain,
+                Source = loggingEvent.LoggerName,
+                User = loggingEvent.UserName,
+                Hostname = Hostname(loggingEvent),
+                Type = Type(loggingEvent),
             };
 
-            _logger.Log(message);
+            Logger.Log(message);
+        }
+
+        private string Type(LoggingEvent loggingEvent)
+        {
+            if (loggingEvent.ExceptionObject == null) return null;
+            return loggingEvent.ExceptionObject.GetType().Name;
+        }
+
+        private string Hostname(LoggingEvent loggingEvent)
+        {
+            if (loggingEvent.Properties == null || loggingEvent.Properties.Count == 0) return null;
+            return loggingEvent.Properties["log4net:HostName"].ToString();
         }
 
         private List<Item> PropertiesToData(PropertiesDictionary properties)
