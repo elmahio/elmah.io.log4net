@@ -10,7 +10,7 @@ PS> Install-Package elmah.io.log4net
 
 Add the elmah.io appender to your log4net.config:
 
-```
+```xml
 <root>
   <appender-ref ref="ElmahIoAppender" />
 </root>
@@ -28,7 +28,7 @@ In the example we specify the level minimum as INFO. This tells log4net to log o
 ## Usage
 Log messages to elmah.io, just as with every other appender and log4net:
 
-```
+```c#
 log.Info("This is an information message");
 log.Error("This is an error message", ex);
 ```
