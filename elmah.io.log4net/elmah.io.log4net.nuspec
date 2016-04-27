@@ -5,8 +5,8 @@
     <authors>elmah.io</authors>
     <owners />
     <dependencies>
-      <dependency id="log4net" version="2.0.0" />
-      <dependency id="elmah.io.client" version="2.0.24" />
+      <dependency id="log4net" version="2.0.5" />
+      <dependency id="elmah.io.client" version="2.0.28" />
     </dependencies>
     <id>elmah.io.log4net</id>
     <title>elmah.io.log4net</title>
