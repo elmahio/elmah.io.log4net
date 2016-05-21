@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using log4netassembly = log4net;
 
@@ -13,11 +14,16 @@ namespace elmah.io.log4net.console
         {
             log4netassembly.Config.XmlConfigurator.Configure();
             var log = log4netassembly.LogManager.GetLogger(typeof(Program));
+
+            log4netassembly.GlobalContext.Properties["ApplicationIdentifier"] = "MyCoolApp";
+            log4netassembly.ThreadContext.Properties["ThreadId"] = Thread.CurrentThread.ManagedThreadId;
+
             log.Debug("This is a debug message");
             log.Error("This is an error message", new Exception());
             log.Fatal("This is a fatal message");
             log.Info("This is an information message");
             log.Warn("This is a warning message");
+
             Console.ReadLine();
         }
     }
