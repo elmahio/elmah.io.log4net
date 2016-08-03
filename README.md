@@ -1,4 +1,8 @@
 # elmah.io.log4net
+
+[![Build status](https://ci.appveyor.com/api/projects/status/xdujoaelpbyg8lov?svg=true)](https://ci.appveyor.com/project/ThomasArdal/elmah-io-log4net)
+[![NuGet](https://img.shields.io/nuget/vpre/elmah.io.log4net.svg)](https://www.nuget.org/packages/elmah.io.log4net)
+
 Log to elmah.io from log4net.
 
 ## Installation
