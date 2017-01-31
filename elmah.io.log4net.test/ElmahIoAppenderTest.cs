@@ -1,28 +1,31 @@
 ﻿using System;
 using Elmah.Io.Client;
+using Elmah.Io.Client.Models;
 using log4net.Core;
 using log4net.Util;
 using Moq;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
-using ILogger = Elmah.Io.Client.ILogger;
 
 namespace Elmah.Io.Log4Net.Test
 {
     public class ElmahIoAppenderTest
     {
         Fixture _fixture;
-        Mock<ILogger> _logger;
+        Mock<IElmahioAPI> _clientMock;
+        Mock<IMessages> _messagesMock;
         ElmahIoAppender _sut;
 
         [SetUp]
         public void SetUp()
         {
             _fixture = new Fixture();
-            _logger = new Mock<ILogger>();
+            _clientMock = new Mock<IElmahioAPI>();
+            _messagesMock = new Mock<IMessages>();
+            _clientMock.Setup(x => x.Messages).Returns(_messagesMock.Object);
             _sut = new ElmahIoAppender
             {
-                Logger = _logger.Object
+                Client = _clientMock.Object
             };
         }
 
@@ -35,17 +38,22 @@ namespace Elmah.Io.Log4Net.Test
             _sut.DoAppend(new LoggingEvent(new LoggingEventData()));
 
             // Assert
-            _logger.Verify(x => x.Log(It.IsAny<Message>()));
+            _messagesMock.Verify(x => x.CreateAndNotify(It.IsAny<Guid>(), It.IsAny<CreateMessage>()));
         }
 
         [Test]
         public void CanLogMessage()
         {
             // Arrange
-            Message message = null;
-            _logger.Setup(x => x.Log(It.IsAny<Message>())).Callback<Message>(msg => message = msg);
+            CreateMessage message = null;
+            _messagesMock
+                .Setup(x => x.CreateAndNotify(It.IsAny<Guid>(), It.IsAny<CreateMessage>()))
+                .Callback<Guid, CreateMessage>((logId, msg) =>
+                {
+                    message = msg;
+                });
 
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var hostname = _fixture.Create<string>();
 
             var properties = Properties(hostname);
@@ -56,8 +64,8 @@ namespace Elmah.Io.Log4Net.Test
 
             // Assert
             Assert.That(message, Is.Not.Null);
-            Assert.That(message.Severity, Is.EqualTo(Severity.Error));
-            Assert.That(message.DateTime, Is.EqualTo(now.ToUniversalTime()));
+            Assert.That(message.Severity, Is.EqualTo(Severity.Error.ToString()));
+            Assert.That(message.DateTime, Is.EqualTo(now));
             Assert.That(message.Hostname, Is.EqualTo(hostname));
             Assert.That(message.Data, Is.Not.Null);
             Assert.That(message.Data.Count, Is.EqualTo(1));
@@ -81,7 +89,7 @@ namespace Elmah.Io.Log4Net.Test
             return new LoggingEventData
             {
                 Level = Level.Error,
-                TimeStamp = now,
+                TimeStampUtc = now,
                 Properties = properties,
                 Domain = _fixture.Create<string>(),
                 LoggerName = _fixture.Create<string>(),
