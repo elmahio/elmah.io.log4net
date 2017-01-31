@@ -14,7 +14,7 @@
     <description>log4net appender for elmah.io</description>
     <projectUrl>https://github.com/elmahio/elmah.io.log4net</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/5c4cb3646528821117abde6d2d5ee22d?s=32</iconUrl>
-	<tags>Error Exception Reporing Management Logging ELMAH Diagnostics Tracing log4net</tags>
+    <tags>Error Exception Reporing Management Logging ELMAH Diagnostics Tracing log4net</tags>
   </metadata>
   <files>
     <file src="elmah.io.log4net\bin\$Configuration$\elmah.io.log4net.dll" target="lib\net45\elmah.io.log4net.dll" />
