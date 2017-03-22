@@ -25,6 +25,8 @@ namespace Elmah.Io.Log4Net
             }
         }
 
+        public string Application { set; get; }
+
         protected override void Append(LoggingEvent loggingEvent)
         {
             if (Logger == null)
@@ -36,9 +38,9 @@ namespace Elmah.Io.Log4Net
             {
                 Severity = LevelToSeverity(loggingEvent.Level),
                 DateTime = loggingEvent.TimeStamp.ToUniversalTime(),
-                Detail = loggingEvent.ExceptionObject != null ? loggingEvent.ExceptionObject.ToString() : null,
+                Detail = loggingEvent.ExceptionObject?.ToString(),
                 Data = PropertiesToData(loggingEvent.GetProperties()),
-                Application = loggingEvent.Domain,
+                Application = Application ?? loggingEvent.Domain,
                 Source = loggingEvent.LoggerName,
                 User = loggingEvent.UserName,
                 Hostname = Hostname(loggingEvent),
