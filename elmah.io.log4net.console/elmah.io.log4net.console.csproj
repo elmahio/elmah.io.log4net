@@ -33,8 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Elmah.Io.Client">
-      <HintPath>..\packages\elmah.io.client.2.0.24\lib\net40\Elmah.Io.Client.dll</HintPath>
+    <Reference Include="Elmah.Io.Client, Version=2.0.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\elmah.io.client.2.0.29\lib\net40\Elmah.Io.Client.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>

@@ -6,7 +6,7 @@
     <owners />
     <dependencies>
       <dependency id="log4net" version="2.0.5" />
-      <dependency id="elmah.io.client" version="2.0.28" />
+      <dependency id="elmah.io.client" version="2.0.29" />
     </dependencies>
     <id>elmah.io.log4net</id>
     <title>elmah.io.log4net</title>
