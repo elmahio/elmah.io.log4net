@@ -22,7 +22,7 @@ build:
   verbosity: minimal
 before_package:
 - ps: >-
-    Push-Location test\Elmah.Io.Log4Net.Tests
+    Push-Location test\Elmah.Io.Log4Net.Test
 
     dotnet test
 
