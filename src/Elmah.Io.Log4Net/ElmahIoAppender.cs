@@ -33,12 +33,14 @@ namespace Elmah.Io.Log4Net
 
         public string Application { get; set; }
 
+        public override void ActivateOptions()
+        {
+            EnsureClient();
+        }
+
         protected override void Append(LoggingEvent loggingEvent)
         {
-            if (Client == null)
-            {
-                Client = ElmahioAPI.Create(_apiKey);
-            }
+            EnsureClient();
 
             var message = new CreateMessage
             {
@@ -94,6 +96,14 @@ namespace Elmah.Io.Log4Net
             if (level == Level.Finest) return Severity.Verbose;
 
             return Severity.Information;
+        }
+
+        private void EnsureClient()
+        {
+            if (Client == null)
+            {
+                Client = ElmahioAPI.Create(_apiKey);
+            }
         }
     }
 }
