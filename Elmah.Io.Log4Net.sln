@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.Console", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.Test", "test\Elmah.Io.Log4Net.Test\Elmah.Io.Log4Net.Test.csproj", "{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.Web", "samples\Elmah.Io.Log4Net.Web\Elmah.Io.Log4Net.Web.csproj", "{791D6D0A-86F7-4A94-BB04-290E2051B5BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{791D6D0A-86F7-4A94-BB04-290E2051B5BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{791D6D0A-86F7-4A94-BB04-290E2051B5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{791D6D0A-86F7-4A94-BB04-290E2051B5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{791D6D0A-86F7-4A94-BB04-290E2051B5BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,5 +53,6 @@ Global
 		{32985BA2-F6C6-476B-91A5-710FBECB5787} = {65A33600-B517-41DF-8BF1-909CC6F5312E}
 		{3E42C9A0-5FC1-4CE8-AEB3-3429094549C3} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
 		{0D80C305-2BFD-40BC-A55B-1C649A3C9B43} = {F234F8E5-BB2D-4FC7-AB10-3D176CF2CE5D}
+		{791D6D0A-86F7-4A94-BB04-290E2051B5BC} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
 	EndGlobalSection
 EndGlobal
