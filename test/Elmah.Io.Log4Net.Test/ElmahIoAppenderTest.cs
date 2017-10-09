@@ -5,13 +5,11 @@ using log4net.Core;
 using log4net.Util;
 using Moq;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
 
 namespace Elmah.Io.Log4Net.Test
 {
     public class ElmahIoAppenderTest
     {
-        Fixture _fixture;
         Mock<IElmahioAPI> _clientMock;
         Mock<IMessages> _messagesMock;
         ElmahIoAppender _sut;
@@ -19,7 +17,6 @@ namespace Elmah.Io.Log4Net.Test
         [SetUp]
         public void SetUp()
         {
-            _fixture = new Fixture();
             _clientMock = new Mock<IElmahioAPI>();
             _messagesMock = new Mock<IMessages>();
             _clientMock.Setup(x => x.Messages).Returns(_messagesMock.Object);
@@ -54,7 +51,7 @@ namespace Elmah.Io.Log4Net.Test
                 });
 
             var now = DateTime.UtcNow;
-            var hostname = _fixture.Create<string>();
+            var hostname = Guid.NewGuid().ToString();
 
             var properties = Properties(hostname);
             var data = LoggingEventData(now, properties);
@@ -91,10 +88,10 @@ namespace Elmah.Io.Log4Net.Test
                 Level = Level.Error,
                 TimeStampUtc = now,
                 Properties = properties,
-                Domain = _fixture.Create<string>(),
-                LoggerName = _fixture.Create<string>(),
-                UserName = _fixture.Create<string>(),
-                Message = _fixture.Create<string>(),
+                Domain = Guid.NewGuid().ToString(),
+                LoggerName = Guid.NewGuid().ToString(),
+                UserName = Guid.NewGuid().ToString(),
+                Message = Guid.NewGuid().ToString(),
             };
         }
     }
