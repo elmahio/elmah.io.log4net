@@ -8,7 +8,9 @@
     <PackageId>Elmah.Io.Log4Net</PackageId>
     <PackageTags>Error;Exception;Reporing;Management;Logging;ELMAH;Diagnostics;Tracing;log4net</PackageTags>
     <PackageIconUrl>https://secure.gravatar.com/avatar/5c4cb3646528821117abde6d2d5ee22d?s=64</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/elmahio/elmah.io.log4net</PackageProjectUrl>
+    <PackageProjectUrl>https://elmah.io</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/elmahio/elmah.io.log4net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -23,8 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elmah.Io.Client" Version="[3.2.53,4)" />
+    <PackageReference Include="Elmah.Io.Client" Version="[3.5.67,4)" />
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
+  </PropertyGroup>
 
 </Project>

@@ -2,7 +2,10 @@
 using System.Linq;
 using System.Threading;
 using Elmah.Io.Log4Net;
+using log4net;
+using log4net.Core;
 using log4net.Repository.Hierarchy;
+using log4net.Util;
 using log4netassembly = log4net;
 
 namespace elmah.io.log4net.console
@@ -25,6 +28,16 @@ namespace elmah.io.log4net.console
             log.Fatal("This is a fatal message");
             log.Info("This is an information message");
             log.Warn("This is a warning message");
+
+            var properties = new PropertiesDictionary();
+            properties["url"] = "http://localhost/about";
+            log.Logger.Log(new LoggingEvent(new LoggingEventData
+            {
+                Level = Level.Error,
+                TimeStampUtc = DateTime.UtcNow,
+                Properties = properties,
+                Message = "This log message includes an url",
+            }));
 
             Console.ReadLine();
         }

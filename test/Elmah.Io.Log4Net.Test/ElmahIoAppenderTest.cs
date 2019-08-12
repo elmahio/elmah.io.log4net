@@ -27,6 +27,57 @@ namespace Elmah.Io.Log4Net.Test
         }
 
         [Test]
+        public void CanLogWellKnownProperties()
+        {
+            // Arrange
+            CreateMessage message = null;
+            _messagesMock
+                .Setup(x => x.CreateAndNotify(It.IsAny<Guid>(), It.IsAny<CreateMessage>()))
+                .Callback<Guid, CreateMessage>((logId, msg) =>
+                {
+                    message = msg;
+                });
+
+            var now = DateTime.UtcNow;
+            var hostname = Guid.NewGuid().ToString();
+            var type = Guid.NewGuid().ToString();
+            var application = Guid.NewGuid().ToString();
+            var user = Guid.NewGuid().ToString();
+            var source = Guid.NewGuid().ToString();
+            var method = Guid.NewGuid().ToString();
+            var version = Guid.NewGuid().ToString();
+            var url = Guid.NewGuid().ToString();
+            var statuscode = 404;
+
+            var properties = new PropertiesDictionary();
+            properties["hostname"] = hostname;
+            properties["type"] = type;
+            properties["application"] = application;
+            properties["user"] = user;
+            properties["source"] = source;
+            properties["method"] = method;
+            properties["version"] = version;
+            properties["url"] = url;
+            properties["statuscode"] = statuscode;
+            var data = LoggingEventData(now, properties);
+
+            // Act
+            _sut.DoAppend(new LoggingEvent(data));
+
+            // Assert
+            Assert.That(message, Is.Not.Null);
+            Assert.That(message.Hostname, Is.EqualTo(hostname));
+            Assert.That(message.Type, Is.EqualTo(type));
+            Assert.That(message.Application, Is.EqualTo(application));
+            Assert.That(message.User, Is.EqualTo(user));
+            Assert.That(message.Source, Is.EqualTo(source));
+            Assert.That(message.Method, Is.EqualTo(method));
+            Assert.That(message.Version, Is.EqualTo(version));
+            Assert.That(message.Url, Is.EqualTo(url));
+            Assert.That(message.StatusCode, Is.EqualTo(statuscode));
+        }
+
+        [Test]
         public void CanLogMinimumMessage()
         {
             // Arrange

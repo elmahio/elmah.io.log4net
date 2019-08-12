@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection;
 using Elmah.Io.Client;
 using Elmah.Io.Client.Models;
 using log4net.Appender;
@@ -11,6 +13,12 @@ namespace Elmah.Io.Log4Net
 {
     public class ElmahIoAppender : AppenderSkeleton
     {
+#if NETSTANDARD
+        internal static string _assemblyVersion = typeof(ElmahIoAppender).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+#else
+        internal static string _assemblyVersion = typeof(ElmahIoAppender).Assembly.GetName().Version.ToString();
+#endif
+
         public IElmahioAPI Client;
         private Guid _logId;
         private string _apiKey;
@@ -49,23 +57,75 @@ namespace Elmah.Io.Log4Net
                 DateTime = loggingEvent.TimeStampUtc,
                 Detail = loggingEvent.ExceptionObject?.ToString(),
                 Data = PropertiesToData(loggingEvent.GetProperties()),
-                Application = Application ?? loggingEvent.Domain,
-                Source = loggingEvent.LoggerName,
-                User = loggingEvent.UserName,
+                Application = ResolveApplication(loggingEvent),
+                Source = Source(loggingEvent),
+                User = User(loggingEvent),
                 Hostname = Hostname(loggingEvent),
                 Type = Type(loggingEvent),
+                Method = Method(loggingEvent),
+                Version = Version(loggingEvent),
+                Url = Url(loggingEvent),
+                StatusCode = StatusCode(loggingEvent),
             };
 
             Client.Messages.CreateAndNotify(_logId, message);
         }
 
+        private int? StatusCode(LoggingEvent loggingEvent)
+        {
+            var statusCode = String(loggingEvent, "statuscode");
+            if (string.IsNullOrWhiteSpace(statusCode)) return null;
+            if (!int.TryParse(statusCode, out int code)) return null;
+            return code;
+        }
+
+        private string Url(LoggingEvent loggingEvent)
+        {
+            return String(loggingEvent, "url");
+        }
+
+        private string Version(LoggingEvent loggingEvent)
+        {
+            return String(loggingEvent, "version");
+        }
+
+        private string Method(LoggingEvent loggingEvent)
+        {
+            return String(loggingEvent, "method");
+        }
+
+        private string Source(LoggingEvent loggingEvent)
+        {
+            var source = String(loggingEvent, "source");
+            if (!string.IsNullOrWhiteSpace(source)) return source;
+            return loggingEvent.LoggerName;
+        }
+
+        private string User(LoggingEvent loggingEvent)
+        {
+            var user = String(loggingEvent, "user");
+            if (!string.IsNullOrWhiteSpace(user)) return user;
+            return loggingEvent.UserName;
+        }
+
+        private string ResolveApplication(LoggingEvent loggingEvent)
+        {
+            var application = String(loggingEvent, "application");
+            if (!string.IsNullOrWhiteSpace(application)) return application;
+            return Application ?? loggingEvent.Domain;
+        }
+
         private string Type(LoggingEvent loggingEvent)
         {
+            var type = String(loggingEvent, "type");
+            if (!string.IsNullOrWhiteSpace(type)) return type;
             return loggingEvent.ExceptionObject?.GetType().FullName;
         }
 
         private string Hostname(LoggingEvent loggingEvent)
         {
+            var hostname = String(loggingEvent, "hostname");
+            if (!string.IsNullOrWhiteSpace(hostname)) return hostname;
             var log4netHostname = "log4net:HostName";
             var properties = loggingEvent.GetProperties();
             if (properties == null || properties.Count == 0 || !properties.Contains(log4netHostname)) return null;
@@ -98,11 +158,24 @@ namespace Elmah.Io.Log4Net
             return Severity.Information;
         }
 
+        static string String(LoggingEvent loggingEvent, string name)
+        {
+            if (loggingEvent == null || loggingEvent.Properties == null || loggingEvent.Properties.Count == 0) return null;
+            if (!loggingEvent.Properties.GetKeys().Any(key => key.ToLower().Equals(name.ToLower()))) return null;
+
+            var property = loggingEvent.Properties[name.ToLower()];
+            return property?.ToString();
+        }
+
         private void EnsureClient()
         {
             if (Client == null)
             {
-                Client = ElmahioAPI.Create(_apiKey);
+                ElmahioAPI api = new ElmahioAPI(new ApiKeyCredentials(_apiKey), HttpClientHandlerFactory.GetHttpClientHandler(new ElmahIoOptions()));
+                api.HttpClient.Timeout = new TimeSpan(0, 0, 5);
+                api.HttpClient.DefaultRequestHeaders.UserAgent.Clear();
+                api.HttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("Elmah.Io.Log4Net", _assemblyVersion)));
+                Client = api;
             }
         }
     }
