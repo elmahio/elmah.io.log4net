@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using Elmah.Io.Log4Net;
-using log4net;
 using log4net.Core;
 using log4net.Repository.Hierarchy;
 using log4net.Util;
