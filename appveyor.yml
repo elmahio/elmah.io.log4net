@@ -1,4 +1,4 @@
-version: 3.1.{build}
+version: 3.2.{build}-pre
 branches:
   only:
   - master
@@ -10,6 +10,7 @@ build:
   verbosity: minimal
 after_build:
 - ps: dotnet pack /p:Version=$env:APPVEYOR_BUILD_VERSION src\Elmah.Io.Log4Net\Elmah.Io.Log4Net.csproj --output artifacts
+- ps: dotnet pack /p:Version=$env:APPVEYOR_BUILD_VERSION src\Elmah.Io.AspNetCore.Log4Net\Elmah.Io.AspNetCore.Log4Net.csproj --output artifacts
 test:
   assemblies:
     only:

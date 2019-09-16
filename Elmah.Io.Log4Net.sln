@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1C7C1616-1A1B-4430-97E9-BCDCBB9FB338}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,13 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F234F8E5-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DB8170C8-0AD1-4F9F-A085-B085F351C24D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net", "src\Elmah.Io.Log4Net\Elmah.Io.Log4Net.csproj", "{32985BA2-F6C6-476B-91A5-710FBECB5787}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net", "src\Elmah.Io.Log4Net\Elmah.Io.Log4Net.csproj", "{32985BA2-F6C6-476B-91A5-710FBECB5787}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.Console", "samples\Elmah.Io.Log4Net.Console\Elmah.Io.Log4Net.Console.csproj", "{3E42C9A0-5FC1-4CE8-AEB3-3429094549C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.Test", "test\Elmah.Io.Log4Net.Test\Elmah.Io.Log4Net.Test.csproj", "{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.Test", "test\Elmah.Io.Log4Net.Test\Elmah.Io.Log4Net.Test.csproj", "{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.Web", "samples\Elmah.Io.Log4Net.Web\Elmah.Io.Log4Net.Web.csproj", "{791D6D0A-86F7-4A94-BB04-290E2051B5BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.AspNetCore22", "samples\Elmah.Io.Log4Net.AspNetCore22\Elmah.Io.Log4Net.AspNetCore22.csproj", "{23E1803C-3CF7-4E05-9562-9FA89602083A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.AspNetCore.Log4Net", "src\Elmah.Io.AspNetCore.Log4Net\Elmah.Io.AspNetCore.Log4Net.csproj", "{CD173F0C-D26B-4E0E-8E68-6302BBC26DC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +43,14 @@ Global
 		{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D80C305-2BFD-40BC-A55B-1C649A3C9B43}.Release|Any CPU.Build.0 = Release|Any CPU
-		{791D6D0A-86F7-4A94-BB04-290E2051B5BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{791D6D0A-86F7-4A94-BB04-290E2051B5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{791D6D0A-86F7-4A94-BB04-290E2051B5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{791D6D0A-86F7-4A94-BB04-290E2051B5BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23E1803C-3CF7-4E05-9562-9FA89602083A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23E1803C-3CF7-4E05-9562-9FA89602083A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23E1803C-3CF7-4E05-9562-9FA89602083A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23E1803C-3CF7-4E05-9562-9FA89602083A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD173F0C-D26B-4E0E-8E68-6302BBC26DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD173F0C-D26B-4E0E-8E68-6302BBC26DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD173F0C-D26B-4E0E-8E68-6302BBC26DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD173F0C-D26B-4E0E-8E68-6302BBC26DC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,10 @@ Global
 		{32985BA2-F6C6-476B-91A5-710FBECB5787} = {65A33600-B517-41DF-8BF1-909CC6F5312E}
 		{3E42C9A0-5FC1-4CE8-AEB3-3429094549C3} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
 		{0D80C305-2BFD-40BC-A55B-1C649A3C9B43} = {F234F8E5-BB2D-4FC7-AB10-3D176CF2CE5D}
-		{791D6D0A-86F7-4A94-BB04-290E2051B5BC} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
+		{23E1803C-3CF7-4E05-9562-9FA89602083A} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
+		{CD173F0C-D26B-4E0E-8E68-6302BBC26DC4} = {65A33600-B517-41DF-8BF1-909CC6F5312E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {097ACF69-EEA9-4C79-814D-D0A4C03C0B29}
 	EndGlobalSection
 EndGlobal

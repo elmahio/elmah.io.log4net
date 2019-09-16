@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>log4net appender for elmah.io</Description>
+    <Description>log4net decorator for ASP.NET Core and elmah.io</Description>
     <Authors>elmah.io</Authors>
-    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
-    <AssemblyName>Elmah.Io.Log4Net</AssemblyName>
-    <PackageId>Elmah.Io.Log4Net</PackageId>
-    <PackageTags>Error;Exception;Reporing;Management;Logging;ELMAH;Diagnostics;Tracing;log4net</PackageTags>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Elmah.Io.AspNetCore.Log4Net</AssemblyName>
+    <PackageId>Elmah.Io.AspNetCore.Log4Net</PackageId>
+    <PackageTags>Error;Exception;Reporing;Management;Logging;ELMAH;Diagnostics;Tracing;log4net;aspnetcore</PackageTags>
     <PackageIconUrl>https://secure.gravatar.com/avatar/5c4cb3646528821117abde6d2d5ee22d?s=64</PackageIconUrl>
     <PackageProjectUrl>https://elmah.io</PackageProjectUrl>
     <RepositoryUrl>https://github.com/elmahio/elmah.io.log4net</RepositoryUrl>
@@ -19,18 +19,9 @@
     <Version>1.0.0</Version>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Elmah.Io.Client" Version="[3.6.72-pre,4)" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
-  </PropertyGroup>
 
 </Project>

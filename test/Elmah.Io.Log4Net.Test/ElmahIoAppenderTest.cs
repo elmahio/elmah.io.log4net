@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Elmah.Io.Client;
 using Elmah.Io.Client.Models;
 using log4net.Core;
@@ -59,6 +61,10 @@ namespace Elmah.Io.Log4Net.Test
             properties["version"] = version;
             properties["url"] = url;
             properties["statuscode"] = statuscode;
+            properties["servervariables"] = new Dictionary<string, string> { { "serverVariableKey", "serverVariableValue" } };
+            properties["cookies"] = new Dictionary<string, string> { { "cookiesKey", "cookiesValue" } };
+            properties["form"] = new Dictionary<string, string> { { "formKey", "formValue" } };
+            properties["querystring"] = new Dictionary<string, string> { { "queryStringKey", "queryStringValue" } };
             var data = LoggingEventData(now, properties);
 
             // Act
@@ -75,6 +81,10 @@ namespace Elmah.Io.Log4Net.Test
             Assert.That(message.Version, Is.EqualTo(version));
             Assert.That(message.Url, Is.EqualTo(url));
             Assert.That(message.StatusCode, Is.EqualTo(statuscode));
+            Assert.That(message.ServerVariables.Any(sv => sv.Key == "serverVariableKey" && sv.Value == "serverVariableValue"));
+            Assert.That(message.Cookies.Any(sv => sv.Key == "cookiesKey" && sv.Value == "cookiesValue"));
+            Assert.That(message.Form.Any(sv => sv.Key == "formKey" && sv.Value == "formValue"));
+            Assert.That(message.QueryString.Any(sv => sv.Key == "queryStringKey" && sv.Value == "queryStringValue"));
         }
 
         [Test]

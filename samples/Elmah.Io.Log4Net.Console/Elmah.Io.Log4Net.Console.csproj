@@ -33,8 +33,8 @@
     <StartupObject>elmah.io.log4net.console.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Elmah.Io.Client, Version=3.5.68.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Elmah.Io.Client.3.5.68\lib\net46\Elmah.Io.Client.dll</HintPath>
+    <Reference Include="Elmah.Io.Client, Version=3.6.72.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Elmah.Io.Client.3.6.72-pre\lib\net46\Elmah.Io.Client.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>

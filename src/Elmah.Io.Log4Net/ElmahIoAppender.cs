@@ -23,6 +23,21 @@ namespace Elmah.Io.Log4Net
         private Guid _logId;
         private string _apiKey;
 
+        private const string HostnameKey = "hostname";
+        private const string QueryStringKey = "querystring";
+        private const string FormKey = "form";
+        private const string CookiesKey = "cookies";
+        private const string ServerVariablesKey = "servervariables";
+        private const string StatusCodeKey = "statuscode";
+        private const string UrlKey = "url";
+        private const string VersionKey = "version";
+        private const string MethodKey = "method";
+        private const string SourceKey = "source";
+        private const string UserKey = "user";
+        private const string ApplicationKey = "application";
+        private const string TypeKey = "type";
+        private readonly string[] knownKeys = new[] { HostnameKey, QueryStringKey, FormKey, CookiesKey, ServerVariablesKey, StatusCodeKey, UrlKey, VersionKey, MethodKey, SourceKey, UserKey, ApplicationKey, TypeKey };
+
         public string LogId
         {
             set
@@ -50,91 +65,142 @@ namespace Elmah.Io.Log4Net
         {
             EnsureClient();
 
+            var properties = loggingEvent.GetProperties();
             var message = new CreateMessage
             {
                 Title = loggingEvent.RenderedMessage,
                 Severity = LevelToSeverity(loggingEvent.Level).ToString(),
                 DateTime = loggingEvent.TimeStampUtc,
                 Detail = loggingEvent.ExceptionObject?.ToString(),
-                Data = PropertiesToData(loggingEvent.GetProperties()),
-                Application = ResolveApplication(loggingEvent),
-                Source = Source(loggingEvent),
-                User = User(loggingEvent),
-                Hostname = Hostname(loggingEvent),
-                Type = Type(loggingEvent),
-                Method = Method(loggingEvent),
-                Version = Version(loggingEvent),
-                Url = Url(loggingEvent),
-                StatusCode = StatusCode(loggingEvent),
+                Data = PropertiesToData(properties),
+                Application = ResolveApplication(loggingEvent, properties),
+                Source = Source(loggingEvent, properties),
+                User = User(loggingEvent, properties),
+                Hostname = Hostname(properties),
+                Type = Type(loggingEvent, properties),
+                Method = Method(properties),
+                Version = Version(properties),
+                Url = Url(properties),
+                StatusCode = StatusCode(properties),
+                ServerVariables = ServerVariables(loggingEvent),
+                Cookies = Cookies(loggingEvent),
+                Form = Form(loggingEvent),
+                QueryString = QueryString(loggingEvent),
             };
 
             Client.Messages.CreateAndNotify(_logId, message);
         }
 
-        private int? StatusCode(LoggingEvent loggingEvent)
+        private IList<Item> QueryString(LoggingEvent loggingEvent)
         {
-            var statusCode = String(loggingEvent, "statuscode");
+            return Items(loggingEvent, QueryStringKey);
+        }
+
+        private IList<Item> Form(LoggingEvent loggingEvent)
+        {
+            return Items(loggingEvent, FormKey);
+        }
+
+        private IList<Item> Cookies(LoggingEvent loggingEvent)
+        {
+            return Items(loggingEvent, CookiesKey);
+        }
+
+        private IList<Item> ServerVariables(LoggingEvent loggingEvent)
+        {
+            return Items(loggingEvent, ServerVariablesKey);
+        }
+
+        private IList<Item> Items(LoggingEvent loggingEvent, string key)
+        {
+            var properties = loggingEvent.GetProperties();
+            if (properties == null) return null;
+            foreach (var property in properties.GetKeys())
+            {
+                if (property.ToLower().Equals(key))
+                {
+                    var value = properties[property];
+                    if (value is Dictionary<string, string> values)
+                    {
+                        return values.Select(v => new Item(v.Key, v.Value)).ToList();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private int? StatusCode(PropertiesDictionary properties)
+        {
+            var statusCode = String(properties, StatusCodeKey);
             if (string.IsNullOrWhiteSpace(statusCode)) return null;
             if (!int.TryParse(statusCode, out int code)) return null;
             return code;
         }
 
-        private string Url(LoggingEvent loggingEvent)
+        private string Url(PropertiesDictionary properties)
         {
-            return String(loggingEvent, "url");
+            return String(properties, UrlKey);
         }
 
-        private string Version(LoggingEvent loggingEvent)
+        private string Version(PropertiesDictionary properties)
         {
-            return String(loggingEvent, "version");
+            return String(properties, VersionKey);
         }
 
-        private string Method(LoggingEvent loggingEvent)
+        private string Method(PropertiesDictionary properties)
         {
-            return String(loggingEvent, "method");
+            return String(properties, MethodKey);
         }
 
-        private string Source(LoggingEvent loggingEvent)
+        private string Source(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
-            var source = String(loggingEvent, "source");
+            var source = String(properties, SourceKey);
             if (!string.IsNullOrWhiteSpace(source)) return source;
-            return loggingEvent.LoggerName;
+            if (loggingEvent.ExceptionObject == null) return loggingEvent.LoggerName;
+            return loggingEvent.ExceptionObject.GetBaseException().Source;
         }
 
-        private string User(LoggingEvent loggingEvent)
+        private string User(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
-            var user = String(loggingEvent, "user");
+            var user = String(properties, UserKey);
             if (!string.IsNullOrWhiteSpace(user)) return user;
             return loggingEvent.UserName;
         }
 
-        private string ResolveApplication(LoggingEvent loggingEvent)
+        private string ResolveApplication(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
-            var application = String(loggingEvent, "application");
+            var application = String(properties, ApplicationKey);
             if (!string.IsNullOrWhiteSpace(application)) return application;
             return Application ?? loggingEvent.Domain;
         }
 
-        private string Type(LoggingEvent loggingEvent)
+        private string Type(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
-            var type = String(loggingEvent, "type");
+            var type = String(properties, TypeKey);
             if (!string.IsNullOrWhiteSpace(type)) return type;
-            return loggingEvent.ExceptionObject?.GetType().FullName;
+            return loggingEvent.ExceptionObject?.GetBaseException().GetType().FullName;
         }
 
-        private string Hostname(LoggingEvent loggingEvent)
+        private string Hostname(PropertiesDictionary properties)
         {
-            var hostname = String(loggingEvent, "hostname");
+            var hostname = String(properties, HostnameKey);
             if (!string.IsNullOrWhiteSpace(hostname)) return hostname;
             var log4netHostname = "log4net:HostName";
-            var properties = loggingEvent.GetProperties();
             if (properties == null || properties.Count == 0 || !properties.Contains(log4netHostname)) return null;
             return properties[log4netHostname].ToString();
         }
 
         private List<Item> PropertiesToData(PropertiesDictionary properties)
         {
-            return properties.GetKeys().Select(key => new Item {Key = key, Value = properties[key].ToString()}).ToList();
+            var items = new List<Item>();
+            foreach (var key in properties.GetKeys().Where(key => !knownKeys.Contains(key.ToLower())))
+            {
+                var value = properties[key];
+                if (value != null) items.Add(new Item(key, properties[key].ToString()));
+            }
+
+            return items;
         }
 
         private Severity? LevelToSeverity(Level level)
@@ -158,12 +224,12 @@ namespace Elmah.Io.Log4Net
             return Severity.Information;
         }
 
-        static string String(LoggingEvent loggingEvent, string name)
+        static string String(PropertiesDictionary properties, string name)
         {
-            if (loggingEvent == null || loggingEvent.Properties == null || loggingEvent.Properties.Count == 0) return null;
-            if (!loggingEvent.Properties.GetKeys().Any(key => key.ToLower().Equals(name.ToLower()))) return null;
+            if (properties == null || properties.Count == 0) return null;
+            if (!properties.GetKeys().Any(key => key.ToLower().Equals(name.ToLower()))) return null;
 
-            var property = loggingEvent.Properties[name.ToLower()];
+            var property = properties[name.ToLower()];
             return property?.ToString();
         }
 
