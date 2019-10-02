@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="Elmah.Io.Client" Version="3.6.72-pre" />
+    <PackageReference Include="Elmah.Io.Client" Version="3.6.73" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Moq" Version="4.13.0" />
     <PackageReference Include="NUnit" Version="3.12.0" />
