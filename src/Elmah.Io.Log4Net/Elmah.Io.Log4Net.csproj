@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>log4net appender for elmah.io</Description>
     <Authors>elmah.io</Authors>
-    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard1.3;netstandard2.0</TargetFrameworks>
     <AssemblyName>Elmah.Io.Log4Net</AssemblyName>
     <PackageId>Elmah.Io.Log4Net</PackageId>
     <PackageTags>Error;Exception;Reporing;Management;Logging;ELMAH;Diagnostics;Tracing;log4net</PackageTags>
@@ -25,12 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elmah.Io.Client" Version="[3.6.73,4)" />
+    <PackageReference Include="Elmah.Io.Client" Version="[3.7.78-pre,4)" />
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
-  </PropertyGroup>
 
 </Project>
