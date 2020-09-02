@@ -167,14 +167,19 @@ namespace Elmah.Io.Log4Net
         {
             var user = String(properties, UserKey);
             if (!string.IsNullOrWhiteSpace(user)) return user;
-            return loggingEvent.UserName;
+            var userName = loggingEvent.UserName;
+            if (!string.IsNullOrWhiteSpace(userName) && !userName.Equals("NOT AVAILABLE")) return userName;
+            return null;
         }
 
         private string ResolveApplication(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var application = String(properties, ApplicationKey);
             if (!string.IsNullOrWhiteSpace(application)) return application;
-            return Application ?? loggingEvent.Domain;
+            if (!string.IsNullOrWhiteSpace(Application)) return Application;
+            var domain = loggingEvent.Domain;
+            if (!string.IsNullOrWhiteSpace(domain) && !domain.Equals("NOT AVAILABLE")) return domain;
+            return null;
         }
 
         private string Type(LoggingEvent loggingEvent, PropertiesDictionary properties)
