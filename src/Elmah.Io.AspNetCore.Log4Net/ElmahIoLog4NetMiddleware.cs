@@ -22,7 +22,6 @@ namespace Elmah.Io.AspNetCore.Log4Net
             LogicalThreadContext.Properties["method"] = context.Request?.Method;
             LogicalThreadContext.Properties["statuscode"] = context.Response.StatusCode;
             LogicalThreadContext.Properties["user"] = context.User?.Identity?.Name;
-            LogicalThreadContext.Properties["user"] = context.User?.Identity?.Name;
             LogicalThreadContext.Properties["servervariables"] = ServerVariables(context);
             LogicalThreadContext.Properties["cookies"] = Cookies(context);
             LogicalThreadContext.Properties["form"] = Form(context);
