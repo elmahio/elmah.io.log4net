@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+#if NETSTANDARD
 using System.Reflection;
+#endif
 using Elmah.Io.Client;
 using Elmah.Io.Client.Models;
 using log4net.Appender;
