@@ -194,7 +194,7 @@ namespace Elmah.Io.Log4Net
             var hostname = String(properties, HostnameKey);
             if (!string.IsNullOrWhiteSpace(hostname)) return hostname;
             var log4netHostname = "log4net:HostName";
-            if (properties != null && properties.Count > 0 && properties.Contains(log4netHostname)) properties[log4netHostname].ToString();
+            if (properties != null && properties.Count > 0 && properties.Contains(log4netHostname)) return properties[log4netHostname].ToString();
 #if !NETSTANDARD1_3
             var machineName = Environment.MachineName;
             if (!string.IsNullOrWhiteSpace(machineName)) return machineName;
