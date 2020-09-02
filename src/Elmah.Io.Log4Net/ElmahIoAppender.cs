@@ -189,8 +189,14 @@ namespace Elmah.Io.Log4Net
             var hostname = String(properties, HostnameKey);
             if (!string.IsNullOrWhiteSpace(hostname)) return hostname;
             var log4netHostname = "log4net:HostName";
-            if (properties == null || properties.Count == 0 || !properties.Contains(log4netHostname)) return null;
-            return properties[log4netHostname].ToString();
+            if (properties != null && properties.Count > 0 && properties.Contains(log4netHostname)) properties[log4netHostname].ToString();
+#if !NETSTANDARD1_3
+            var machineName = Environment.MachineName;
+            if (!string.IsNullOrWhiteSpace(machineName)) return machineName;
+#endif
+            var computerName = Environment.GetEnvironmentVariable("COMPUTERNAME");
+            if (!string.IsNullOrWhiteSpace(computerName)) return computerName;
+            return null;
         }
 
         private List<Item> PropertiesToData(PropertiesDictionary properties, Exception exception)
