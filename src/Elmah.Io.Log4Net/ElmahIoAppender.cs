@@ -74,7 +74,7 @@ namespace Elmah.Io.Log4Net
                 Severity = LevelToSeverity(loggingEvent.Level).ToString(),
                 DateTime = loggingEvent.TimeStampUtc,
                 Detail = loggingEvent.ExceptionObject?.ToString(),
-                Data = PropertiesToData(properties),
+                Data = PropertiesToData(properties, loggingEvent.ExceptionObject),
                 Application = ResolveApplication(loggingEvent, properties),
                 Source = Source(loggingEvent, properties),
                 User = User(loggingEvent, properties),
@@ -193,13 +193,18 @@ namespace Elmah.Io.Log4Net
             return properties[log4netHostname].ToString();
         }
 
-        private List<Item> PropertiesToData(PropertiesDictionary properties)
+        private List<Item> PropertiesToData(PropertiesDictionary properties, Exception exception)
         {
             var items = new List<Item>();
             foreach (var key in properties.GetKeys().Where(key => !knownKeys.Contains(key.ToLower())))
             {
                 var value = properties[key];
                 if (value != null) items.Add(new Item(key, properties[key].ToString()));
+            }
+
+            if (exception != null)
+            {
+                items.AddRange(exception.ToDataList());
             }
 
             return items;
