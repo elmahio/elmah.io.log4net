@@ -2,7 +2,7 @@ version: 3.4.{build}
 branches:
   only:
   - master
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 before_build:
 - cmd: dotnet restore
@@ -20,4 +20,4 @@ artifacts:
 deploy:
 - provider: NuGet
   api_key:
-    secure: 9XpSybqiIbTFiTdfkpUaBSMdLFCm4yx/MYR7KtYbV18g5gP5L6U8bhhOPfi/56o+
+    secure: RQWqfWK1hfN1yqTFr0rFyVweuhfIN6nMVRER6HqRe7m197hEqjvlpeEy/UEIaCwu
