@@ -5,7 +5,6 @@ VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1C7C1616-1A1B-4430-97E9-BCDCBB9FB338}"
 	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -23,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.Test", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.AspNetCore.Log4Net", "src\Elmah.Io.AspNetCore.Log4Net\Elmah.Io.AspNetCore.Log4Net.csproj", "{CD173F0C-D26B-4E0E-8E68-6302BBC26DC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.AspNetCore31", "samples\Elmah.Io.Log4Net.AspNetCore31\Elmah.Io.Log4Net.AspNetCore31.csproj", "{8F6249B9-727C-45C5-9D4D-2B4376272654}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.AspNetCore31", "samples\Elmah.Io.Log4Net.AspNetCore31\Elmah.Io.Log4Net.AspNetCore31.csproj", "{8F6249B9-727C-45C5-9D4D-2B4376272654}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
