@@ -5,26 +5,26 @@ using Elmah.Io.Client;
 using Elmah.Io.Client.Models;
 using log4net.Core;
 using log4net.Util;
-using Moq;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Elmah.Io.Log4Net.Test
 {
     public class ElmahIoAppenderTest
     {
-        Mock<IElmahioAPI> _clientMock;
-        Mock<IMessages> _messagesMock;
+        IElmahioAPI _clientMock;
+        IMessages _messagesMock;
         ElmahIoAppender _sut;
 
         [SetUp]
         public void SetUp()
         {
-            _clientMock = new Mock<IElmahioAPI>();
-            _messagesMock = new Mock<IMessages>();
-            _clientMock.Setup(x => x.Messages).Returns(_messagesMock.Object);
+            _clientMock = Substitute.For<IElmahioAPI>();
+            _messagesMock = Substitute.For<IMessages>();
+            _clientMock.Messages.Returns(_messagesMock);
             _sut = new ElmahIoAppender
             {
-                Client = _clientMock.Object
+                Client = _clientMock
             };
         }
 
@@ -34,11 +34,8 @@ namespace Elmah.Io.Log4Net.Test
             // Arrange
             CreateMessage message = null;
             _messagesMock
-                .Setup(x => x.CreateAndNotify(It.IsAny<Guid>(), It.IsAny<CreateMessage>()))
-                .Callback<Guid, CreateMessage>((logId, msg) =>
-                {
-                    message = msg;
-                });
+                .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
+                .Do(x => message = x.Arg<CreateMessage>());
 
             var now = DateTime.UtcNow;
             var hostname = Guid.NewGuid().ToString();
@@ -96,7 +93,7 @@ namespace Elmah.Io.Log4Net.Test
             _sut.DoAppend(new LoggingEvent(new LoggingEventData()));
 
             // Assert
-            _messagesMock.Verify(x => x.CreateAndNotify(It.IsAny<Guid>(), It.IsAny<CreateMessage>()));
+            _messagesMock.Received().CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>());
         }
 
         [Test]
@@ -105,11 +102,8 @@ namespace Elmah.Io.Log4Net.Test
             // Arrange
             CreateMessage message = null;
             _messagesMock
-                .Setup(x => x.CreateAndNotify(It.IsAny<Guid>(), It.IsAny<CreateMessage>()))
-                .Callback<Guid, CreateMessage>((logId, msg) =>
-                {
-                    message = msg;
-                });
+                .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
+                .Do(x => message = x.Arg<CreateMessage>());
 
             var now = DateTime.UtcNow;
             var hostname = Guid.NewGuid().ToString();
