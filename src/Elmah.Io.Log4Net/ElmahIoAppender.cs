@@ -13,6 +13,9 @@ using log4net.Util;
 
 namespace Elmah.Io.Log4Net
 {
+    /// <summary>
+    /// Appender for storing log4net messages to elmah.io.
+    /// </summary>
     public class ElmahIoAppender : AppenderSkeleton
     {
 #if NETSTANDARD
@@ -21,7 +24,7 @@ namespace Elmah.Io.Log4Net
         internal static string _assemblyVersion = typeof(ElmahIoAppender).Assembly.GetName().Version.ToString();
 #endif
 
-        public IElmahioAPI Client;
+        private IElmahioAPI _client;
         private Guid _logId;
         private string _apiKey;
 
@@ -38,8 +41,29 @@ namespace Elmah.Io.Log4Net
         private const string UserKey = "user";
         private const string ApplicationKey = "application";
         private const string TypeKey = "type";
-        private readonly string[] knownKeys = new[] { HostnameKey, QueryStringKey, FormKey, CookiesKey, ServerVariablesKey, StatusCodeKey, UrlKey, VersionKey, MethodKey, SourceKey, UserKey, ApplicationKey, TypeKey };
+        private const string CorrelationIdKey = "correlationid";
+        private readonly string[] knownKeys = new[] { HostnameKey, QueryStringKey, FormKey, CookiesKey, ServerVariablesKey, StatusCodeKey, UrlKey, VersionKey, MethodKey, SourceKey, UserKey, ApplicationKey, TypeKey, CorrelationIdKey };
 
+        /// <summary>
+        /// The configured IElmahioAPI client to use for communicating with the elmah.io API. The appender create the client
+        /// manually but you can get it to set up OnMessage actions etc.
+        /// </summary>
+        public IElmahioAPI Client
+        {
+            get
+            {
+                EnsureClient();
+                return _client;
+            }
+            set
+            {
+                _client = value;
+            }
+        }
+
+        /// <summary>
+        /// The ID of the log to store log messages in.
+        /// </summary>
         public string LogId
         {
             set
@@ -51,18 +75,28 @@ namespace Elmah.Io.Log4Net
             }
         }
 
+        /// <summary>
+        /// The API key to use when calling the elmah.io API. The API key must have the Messages | Write permission enabled.
+        /// </summary>
         public string ApiKey
         {
             set { _apiKey = value; }
         }
 
+        /// <summary>
+        /// Set an application name on all log messages.
+        /// </summary>
         public string Application { get; set; }
 
+        ///<inheritdoc/>
         public override void ActivateOptions()
         {
             EnsureClient();
         }
 
+        /// <summary>
+        /// Store a log message to elmah.io.
+        /// </summary>
         protected override void Append(LoggingEvent loggingEvent)
         {
             EnsureClient();
@@ -84,13 +118,14 @@ namespace Elmah.Io.Log4Net
                 Version = Version(properties),
                 Url = Url(properties),
                 StatusCode = StatusCode(properties),
+                CorrelationId = CorrelationId(properties),
                 ServerVariables = ServerVariables(loggingEvent),
                 Cookies = Cookies(loggingEvent),
                 Form = Form(loggingEvent),
                 QueryString = QueryString(loggingEvent),
             };
 
-            Client.Messages.CreateAndNotify(_logId, message);
+            _client.Messages.CreateAndNotify(_logId, message);
         }
 
         private IList<Item> QueryString(LoggingEvent loggingEvent)
@@ -130,6 +165,11 @@ namespace Elmah.Io.Log4Net
             }
 
             return null;
+        }
+
+        private string CorrelationId(PropertiesDictionary properties)
+        {
+            return String(properties, CorrelationIdKey);
         }
 
         private int? StatusCode(PropertiesDictionary properties)
@@ -242,10 +282,10 @@ namespace Elmah.Io.Log4Net
             return Severity.Information;
         }
 
-        static string String(PropertiesDictionary properties, string name)
+        private static string String(PropertiesDictionary properties, string name)
         {
             if (properties == null || properties.Count == 0) return null;
-            if (!properties.GetKeys().Any(key => key.ToLower().Equals(name.ToLower()))) return null;
+            if (!properties.GetKeys().Any(key => key.Equals(name, StringComparison.OrdinalIgnoreCase))) return null;
 
             var property = properties[name.ToLower()];
             return property?.ToString();
@@ -253,12 +293,12 @@ namespace Elmah.Io.Log4Net
 
         private void EnsureClient()
         {
-            if (Client == null)
+            if (_client == null)
             {
                 var api = (ElmahioAPI)ElmahioAPI.Create(_apiKey);
                 api.HttpClient.Timeout = new TimeSpan(0, 0, 5);
                 api.HttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("Elmah.Io.Log4Net", _assemblyVersion)));
-                Client = api;
+                _client = api;
             }
         }
     }

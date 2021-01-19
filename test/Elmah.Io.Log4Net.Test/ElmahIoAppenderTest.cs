@@ -38,15 +38,16 @@ namespace Elmah.Io.Log4Net.Test
                 .Do(x => message = x.Arg<CreateMessage>());
 
             var now = DateTime.UtcNow;
-            var hostname = Guid.NewGuid().ToString();
-            var type = Guid.NewGuid().ToString();
-            var application = Guid.NewGuid().ToString();
-            var user = Guid.NewGuid().ToString();
-            var source = Guid.NewGuid().ToString();
-            var method = Guid.NewGuid().ToString();
-            var version = Guid.NewGuid().ToString();
-            var url = Guid.NewGuid().ToString();
+            var hostname = RandString();
+            var type = RandString();
+            var application = RandString();
+            var user = RandString();
+            var source = RandString();
+            var method = RandString();
+            var version = RandString();
+            var url = RandString();
             var statuscode = 404;
+            var correlationId = RandString();
 
             var properties = new PropertiesDictionary();
             properties["hostname"] = hostname;
@@ -58,6 +59,7 @@ namespace Elmah.Io.Log4Net.Test
             properties["version"] = version;
             properties["url"] = url;
             properties["statuscode"] = statuscode;
+            properties["correlationid"] = correlationId;
             properties["servervariables"] = new Dictionary<string, string> { { "serverVariableKey", "serverVariableValue" } };
             properties["cookies"] = new Dictionary<string, string> { { "cookiesKey", "cookiesValue" } };
             properties["form"] = new Dictionary<string, string> { { "formKey", "formValue" } };
@@ -78,6 +80,7 @@ namespace Elmah.Io.Log4Net.Test
             Assert.That(message.Version, Is.EqualTo(version));
             Assert.That(message.Url, Is.EqualTo(url));
             Assert.That(message.StatusCode, Is.EqualTo(statuscode));
+            Assert.That(message.CorrelationId, Is.EqualTo(correlationId));
             Assert.That(message.ServerVariables.Any(sv => sv.Key == "serverVariableKey" && sv.Value == "serverVariableValue"));
             Assert.That(message.Cookies.Any(sv => sv.Key == "cookiesKey" && sv.Value == "cookiesValue"));
             Assert.That(message.Form.Any(sv => sv.Key == "formKey" && sv.Value == "formValue"));
@@ -148,6 +151,11 @@ namespace Elmah.Io.Log4Net.Test
                 UserName = Guid.NewGuid().ToString(),
                 Message = Guid.NewGuid().ToString(),
             };
+        }
+
+        private string RandString()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }
