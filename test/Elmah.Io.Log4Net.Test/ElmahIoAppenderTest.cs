@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Elmah.Io.Client;
-using Elmah.Io.Client.Models;
 using log4net.Core;
 using log4net.Util;
 using NSubstitute;
@@ -13,15 +12,15 @@ namespace Elmah.Io.Log4Net.Test
     public class ElmahIoAppenderTest
     {
         IElmahioAPI _clientMock;
-        IMessages _messagesMock;
+        IMessagesClient _messagesClientMock;
         ElmahIoAppender _sut;
 
         [SetUp]
         public void SetUp()
         {
             _clientMock = Substitute.For<IElmahioAPI>();
-            _messagesMock = Substitute.For<IMessages>();
-            _clientMock.Messages.Returns(_messagesMock);
+            _messagesClientMock = Substitute.For<IMessagesClient>();
+            _clientMock.Messages.Returns(_messagesClientMock);
             _sut = new ElmahIoAppender
             {
                 Client = _clientMock
@@ -33,7 +32,7 @@ namespace Elmah.Io.Log4Net.Test
         {
             // Arrange
             CreateMessage message = null;
-            _messagesMock
+            _messagesClientMock
                 .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
                 .Do(x => message = x.Arg<CreateMessage>());
 
@@ -96,7 +95,7 @@ namespace Elmah.Io.Log4Net.Test
             _sut.DoAppend(new LoggingEvent(new LoggingEventData()));
 
             // Assert
-            _messagesMock.Received().CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>());
+            _messagesClientMock.Received().CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>());
         }
 
         [Test]
@@ -104,7 +103,7 @@ namespace Elmah.Io.Log4Net.Test
         {
             // Arrange
             CreateMessage message = null;
-            _messagesMock
+            _messagesClientMock
                 .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
                 .Do(x => message = x.Arg<CreateMessage>());
 
@@ -120,12 +119,12 @@ namespace Elmah.Io.Log4Net.Test
             // Assert
             Assert.That(message, Is.Not.Null);
             Assert.That(message.Severity, Is.EqualTo(Severity.Error.ToString()));
-            Assert.That(message.DateTime, Is.EqualTo(now));
+            Assert.That(message.DateTime.Value.DateTime, Is.EqualTo(now));
             Assert.That(message.Hostname, Is.EqualTo(hostname));
             Assert.That(message.Data, Is.Not.Null);
             Assert.That(message.Data.Count, Is.EqualTo(1));
-            Assert.That(message.Data[0].Key, Is.EqualTo("log4net:HostName"));
-            Assert.That(message.Data[0].Value, Is.EqualTo(hostname));
+            Assert.That(message.Data.First().Key, Is.EqualTo("log4net:HostName"));
+            Assert.That(message.Data.First().Value, Is.EqualTo(hostname));
             Assert.That(message.Application, Is.EqualTo(data.Domain));
             Assert.That(message.Source, Is.EqualTo(data.LoggerName));
             Assert.That(message.User, Is.EqualTo(data.UserName));

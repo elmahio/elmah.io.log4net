@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Reflection;
 #endif
 using Elmah.Io.Client;
-using Elmah.Io.Client.Models;
 using log4net.Appender;
 using log4net.Core;
 using log4net.Util;
@@ -106,7 +105,7 @@ namespace Elmah.Io.Log4Net
             {
                 Title = loggingEvent.RenderedMessage,
                 Severity = LevelToSeverity(loggingEvent.Level).ToString(),
-                DateTime = loggingEvent.TimeStampUtc,
+                DateTime = DateTimeToOffset(loggingEvent.TimeStampUtc),
                 Detail = loggingEvent.ExceptionObject?.ToString(),
                 Data = PropertiesToData(properties, loggingEvent.ExceptionObject),
                 Application = ResolveApplication(loggingEvent, properties),
@@ -124,8 +123,12 @@ namespace Elmah.Io.Log4Net
                 Form = Form(loggingEvent),
                 QueryString = QueryString(loggingEvent),
             };
-
             _client.Messages.CreateAndNotify(_logId, message);
+        }
+
+        private DateTimeOffset? DateTimeToOffset(DateTime timeStampUtc)
+        {
+            return timeStampUtc == null || timeStampUtc == DateTime.MinValue ? null : (DateTimeOffset?)timeStampUtc;
         }
 
         private IList<Item> QueryString(LoggingEvent loggingEvent)
