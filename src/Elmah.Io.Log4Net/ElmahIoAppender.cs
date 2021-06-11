@@ -298,7 +298,7 @@ namespace Elmah.Io.Log4Net
         {
             if (_client == null)
             {
-                var api = (ElmahioAPI)ElmahioAPI.Create(_apiKey);
+                var api = ElmahioAPI.Create(_apiKey);
                 api.HttpClient.Timeout = new TimeSpan(0, 0, 5);
                 api.HttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("Elmah.Io.Log4Net", _assemblyVersion)));
                 _client = api;
