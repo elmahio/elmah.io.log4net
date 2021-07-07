@@ -19,8 +19,10 @@ namespace Elmah.Io.Log4Net
     {
 #if NETSTANDARD
         internal static string _assemblyVersion = typeof(ElmahIoAppender).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        internal static string _log4netAssemblyVersion = typeof(AppenderSkeleton).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 #else
         internal static string _assemblyVersion = typeof(ElmahIoAppender).Assembly.GetName().Version.ToString();
+        internal static string _log4netAssemblyVersion = typeof(AppenderSkeleton).Assembly.GetName().Version.ToString();
 #endif
 
         private IElmahioAPI _client;
@@ -301,6 +303,7 @@ namespace Elmah.Io.Log4Net
                 var api = ElmahioAPI.Create(_apiKey);
                 api.HttpClient.Timeout = new TimeSpan(0, 0, 5);
                 api.HttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("Elmah.Io.Log4Net", _assemblyVersion)));
+                api.HttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("log4net", _log4netAssemblyVersion)));
                 _client = api;
             }
         }
