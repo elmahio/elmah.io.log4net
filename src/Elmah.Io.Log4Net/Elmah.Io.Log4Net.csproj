@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elmah.Io.Client" Version="[4.0.26-pre,5)" />
+    <PackageReference Include="Elmah.Io.Client" Version="[4.0.29,5)" />
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
 
