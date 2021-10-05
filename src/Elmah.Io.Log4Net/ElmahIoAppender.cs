@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Text;
 #if NETSTANDARD
 using System.Reflection;
 #endif
@@ -300,12 +301,22 @@ namespace Elmah.Io.Log4Net
         {
             if (_client == null)
             {
-                var api = ElmahioAPI.Create(_apiKey);
-                api.HttpClient.Timeout = new TimeSpan(0, 0, 5);
-                api.HttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("Elmah.Io.Log4Net", _assemblyVersion)));
-                api.HttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("log4net", _log4netAssemblyVersion)));
+                var api = ElmahioAPI.Create(_apiKey, new ElmahIoOptions
+                {
+                    Timeout = new TimeSpan(0, 0, 5),
+                    UserAgent = UserAgent(),
+                });
                 _client = api;
             }
+        }
+
+        private static string UserAgent()
+        {
+            return new StringBuilder()
+                .Append(new ProductInfoHeaderValue(new ProductHeaderValue("Elmah.Io.Log4Net", _assemblyVersion)).ToString())
+                .Append(" ")
+                .Append(new ProductInfoHeaderValue(new ProductHeaderValue("log4net", _log4netAssemblyVersion)).ToString())
+                .ToString();
         }
     }
 }
