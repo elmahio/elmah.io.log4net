@@ -7,15 +7,24 @@ using System.Threading.Tasks;
 
 namespace Elmah.Io.AspNetCore.Log4Net
 {
+    /// <summary>
+    /// Middleware class for ASP.NET Core that enrich all log messages with the HTTP context.
+    /// </summary>
     public class ElmahIoLog4NetMiddleware
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// Create a new instance of the middleware. You typically don't want to call this manually.
+        /// </summary>
         public ElmahIoLog4NetMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
+        /// <summary>
+        /// Invoke the middleware. You typically don't want to call this manually.
+        /// </summary>
         public async Task Invoke(HttpContext context)
         {
             LogicalThreadContext.Properties["url"] = context.Request?.Path.Value;
