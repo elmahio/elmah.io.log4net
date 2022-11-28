@@ -25,7 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.AspNetCore.Log4Net
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.AspNetCore31", "samples\Elmah.Io.Log4Net.AspNetCore31\Elmah.Io.Log4Net.AspNetCore31.csproj", "{8F6249B9-727C-45C5-9D4D-2B4376272654}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.AspNetCore60", "samples\Elmah.Io.Log4Net.AspNetCore60\Elmah.Io.Log4Net.AspNetCore60.csproj", "{A1D2889D-1357-4465-A2C3-8BCF245025FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.AspNetCore60", "samples\Elmah.Io.Log4Net.AspNetCore60\Elmah.Io.Log4Net.AspNetCore60.csproj", "{A1D2889D-1357-4465-A2C3-8BCF245025FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.AspNetCore70", "samples\Elmah.Io.Log4Net.AspNetCore70\Elmah.Io.Log4Net.AspNetCore70.csproj", "{001D826C-B6AD-4A77-A88A-CABBD9FFFC38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.Console70", "samples\Elmah.Io.Log4Net.Console70\Elmah.Io.Log4Net.Console70.csproj", "{F153F57B-5DEA-4DA0-BFF3-CFAE9C686DE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{A1D2889D-1357-4465-A2C3-8BCF245025FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1D2889D-1357-4465-A2C3-8BCF245025FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1D2889D-1357-4465-A2C3-8BCF245025FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{001D826C-B6AD-4A77-A88A-CABBD9FFFC38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{001D826C-B6AD-4A77-A88A-CABBD9FFFC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{001D826C-B6AD-4A77-A88A-CABBD9FFFC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{001D826C-B6AD-4A77-A88A-CABBD9FFFC38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F153F57B-5DEA-4DA0-BFF3-CFAE9C686DE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F153F57B-5DEA-4DA0-BFF3-CFAE9C686DE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F153F57B-5DEA-4DA0-BFF3-CFAE9C686DE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F153F57B-5DEA-4DA0-BFF3-CFAE9C686DE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +80,8 @@ Global
 		{CD173F0C-D26B-4E0E-8E68-6302BBC26DC4} = {65A33600-B517-41DF-8BF1-909CC6F5312E}
 		{8F6249B9-727C-45C5-9D4D-2B4376272654} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
 		{A1D2889D-1357-4465-A2C3-8BCF245025FD} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
+		{001D826C-B6AD-4A77-A88A-CABBD9FFFC38} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
+		{F153F57B-5DEA-4DA0-BFF3-CFAE9C686DE3} = {DB8170C8-0AD1-4F9F-A085-B085F351C24D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {097ACF69-EEA9-4C79-814D-D0A4C03C0B29}
