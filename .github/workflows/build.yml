@@ -27,18 +27,18 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Pack Elmah.Io.Log4Net
-      run: dotnet pack --configuration Release src/Elmah.Io.Log4Net/Elmah.Io.Log4Net.csproj /p:Version=4.2.${{ github.run_number }}-pre
+      run: dotnet pack --configuration Release src/Elmah.Io.Log4Net/Elmah.Io.Log4Net.csproj /p:Version=4.2.${{ github.run_number }}
     - name: Pack Elmah.Io.AspNetCore.Log4Net
-      run: dotnet pack --configuration Release src/Elmah.Io.AspNetCore.Log4Net/Elmah.Io.AspNetCore.Log4Net.csproj /p:Version=4.2.${{ github.run_number }}-pre
+      run: dotnet pack --configuration Release src/Elmah.Io.AspNetCore.Log4Net/Elmah.Io.AspNetCore.Log4Net.csproj /p:Version=4.2.${{ github.run_number }}
     - name: Install dotnet-validate
       run: dotnet tool install --global dotnet-validate --version 0.0.1-preview.304
     - name: Validate Elmah.Io.Log4Net
-      run: dotnet-validate package local src/Elmah.Io.Log4Net/bin/Release/Elmah.Io.Log4Net.4.2.${{ github.run_number }}-pre.nupkg
+      run: dotnet-validate package local src/Elmah.Io.Log4Net/bin/Release/Elmah.Io.Log4Net.4.2.${{ github.run_number }}.nupkg
     - name: Validate Elmah.Io.AspNetCore.Log4Net
-      run: dotnet-validate package local src/Elmah.Io.AspNetCore.Log4Net/bin/Release/Elmah.Io.AspNetCore.Log4Net.4.2.${{ github.run_number }}-pre.nupkg
+      run: dotnet-validate package local src/Elmah.Io.AspNetCore.Log4Net/bin/Release/Elmah.Io.AspNetCore.Log4Net.4.2.${{ github.run_number }}.nupkg
     - name: Push Elmah.Io.Log4Net to nuget.org
-      run: dotnet nuget push src/Elmah.Io.Log4Net/bin/Release/Elmah.Io.Log4Net.4.2.${{ github.run_number }}-pre.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push src/Elmah.Io.Log4Net/bin/Release/Elmah.Io.Log4Net.4.2.${{ github.run_number }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
       if: ${{ github.event_name == 'push' }}
     - name: Push Elmah.Io.AspNetCore.Log4Net to nuget.org
-      run: dotnet nuget push src/Elmah.Io.AspNetCore.Log4Net/bin/Release/Elmah.Io.AspNetCore.Log4Net.4.2.${{ github.run_number }}-pre.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push src/Elmah.Io.AspNetCore.Log4Net/bin/Release/Elmah.Io.AspNetCore.Log4Net.4.2.${{ github.run_number }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
       if: ${{ github.event_name == 'push' }}
