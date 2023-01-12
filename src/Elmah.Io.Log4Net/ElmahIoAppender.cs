@@ -44,7 +44,8 @@ namespace Elmah.Io.Log4Net
         private const string ApplicationKey = "application";
         private const string TypeKey = "type";
         private const string CorrelationIdKey = "correlationid";
-        private readonly string[] knownKeys = new[] { HostnameKey, QueryStringKey, FormKey, CookiesKey, ServerVariablesKey, StatusCodeKey, UrlKey, VersionKey, MethodKey, SourceKey, UserKey, ApplicationKey, TypeKey, CorrelationIdKey };
+        private const string CategoryKey = "category";
+        private readonly string[] knownKeys = new[] { HostnameKey, QueryStringKey, FormKey, CookiesKey, ServerVariablesKey, StatusCodeKey, UrlKey, VersionKey, MethodKey, SourceKey, UserKey, ApplicationKey, TypeKey, CorrelationIdKey, CategoryKey };
 
         /// <summary>
         /// The configured IElmahioAPI client to use for communicating with the elmah.io API. The appender create the client
@@ -121,6 +122,7 @@ namespace Elmah.Io.Log4Net
                 Url = Url(properties),
                 StatusCode = StatusCode(properties),
                 CorrelationId = CorrelationId(properties),
+                Category = Category(loggingEvent, properties),
                 ServerVariables = ServerVariables(loggingEvent),
                 Cookies = Cookies(loggingEvent),
                 Form = Form(loggingEvent),
@@ -205,8 +207,14 @@ namespace Elmah.Io.Log4Net
         {
             var source = String(properties, SourceKey);
             if (!string.IsNullOrWhiteSpace(source)) return source;
-            if (loggingEvent.ExceptionObject == null) return loggingEvent.LoggerName;
-            return loggingEvent.ExceptionObject.GetBaseException().Source;
+            return loggingEvent.ExceptionObject?.GetBaseException().Source;
+        }
+
+        private string Category(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        {
+            var category = String(properties, CategoryKey);
+            if (!string.IsNullOrWhiteSpace(category)) return category;
+            return loggingEvent.LoggerName;
         }
 
         private string User(LoggingEvent loggingEvent, PropertiesDictionary properties)
