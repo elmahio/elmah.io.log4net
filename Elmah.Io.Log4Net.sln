@@ -26,9 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.AspNetCore
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.AspNetCore60", "samples\Elmah.Io.Log4Net.AspNetCore60\Elmah.Io.Log4Net.AspNetCore60.csproj", "{A1D2889D-1357-4465-A2C3-8BCF245025FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.AspNetCore70", "samples\Elmah.Io.Log4Net.AspNetCore70\Elmah.Io.Log4Net.AspNetCore70.csproj", "{001D826C-B6AD-4A77-A88A-CABBD9FFFC38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.AspNetCore70", "samples\Elmah.Io.Log4Net.AspNetCore70\Elmah.Io.Log4Net.AspNetCore70.csproj", "{001D826C-B6AD-4A77-A88A-CABBD9FFFC38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elmah.Io.Log4Net.Console70", "samples\Elmah.Io.Log4Net.Console70\Elmah.Io.Log4Net.Console70.csproj", "{F153F57B-5DEA-4DA0-BFF3-CFAE9C686DE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elmah.Io.Log4Net.Console70", "samples\Elmah.Io.Log4Net.Console70\Elmah.Io.Log4Net.Console70.csproj", "{F153F57B-5DEA-4DA0-BFF3-CFAE9C686DE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
