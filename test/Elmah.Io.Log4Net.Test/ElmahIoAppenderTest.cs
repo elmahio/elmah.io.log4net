@@ -135,6 +135,31 @@ namespace Elmah.Io.Log4Net.Test
             Assert.That(message.Title, Is.EqualTo(data.Message));
         }
 
+        [Test]
+        public void CanLogMessageWithException()
+        {
+            // Arrange
+            CreateMessage message = null;
+            _messagesClientMock
+                .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
+                .Do(x => message = x.Arg<CreateMessage>());
+
+            var now = DateTime.UtcNow;
+            var data = LoggingEventData(now, new PropertiesDictionary());
+            var loggingEvent = new LoggingEvent(null, null, null, Level.Error, "A message", new ArgumentException("Oh no"));
+
+            // Act
+            _sut.DoAppend(loggingEvent);
+
+            // Assert
+            Assert.That(message, Is.Not.Null);
+            Assert.That(message.Severity, Is.EqualTo(Severity.Error.ToString()));
+            Assert.That(message.Data, Is.Not.Null);
+            Assert.That(message.Data.Any(d => d.Key == "X-ELMAHIO-EXCEPTIONINSPECTOR"));
+            Assert.That(message.Type, Is.EqualTo("System.ArgumentException"));
+            Assert.That(message.Title, Is.EqualTo("A message"));
+        }
+
         private PropertiesDictionary Properties(string hostname)
         {
             var properties = new PropertiesDictionary();
