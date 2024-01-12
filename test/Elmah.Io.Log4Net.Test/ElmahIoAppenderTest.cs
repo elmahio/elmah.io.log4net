@@ -144,8 +144,6 @@ namespace Elmah.Io.Log4Net.Test
                 .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
                 .Do(x => message = x.Arg<CreateMessage>());
 
-            var now = DateTime.UtcNow;
-            var data = LoggingEventData(now, new PropertiesDictionary());
             var loggingEvent = new LoggingEvent(null, null, null, Level.Error, "A message", new ArgumentException("Oh no"));
 
             // Act
@@ -160,14 +158,14 @@ namespace Elmah.Io.Log4Net.Test
             Assert.That(message.Title, Is.EqualTo("A message"));
         }
 
-        private PropertiesDictionary Properties(string hostname)
+        private static PropertiesDictionary Properties(string hostname)
         {
             var properties = new PropertiesDictionary();
             properties["log4net:HostName"] = hostname;
             return properties;
         }
 
-        private LoggingEventData LoggingEventData(DateTime now, PropertiesDictionary properties)
+        private static LoggingEventData LoggingEventData(DateTime now, PropertiesDictionary properties)
         {
             return new LoggingEventData
             {
@@ -181,7 +179,7 @@ namespace Elmah.Io.Log4Net.Test
             };
         }
 
-        private string RandString()
+        private static string RandString()
         {
             return Guid.NewGuid().ToString();
         }

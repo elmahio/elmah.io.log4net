@@ -19,11 +19,11 @@ namespace Elmah.Io.Log4Net
     public class ElmahIoAppender : AppenderSkeleton
     {
 #if NETSTANDARD
-        internal static string _assemblyVersion = typeof(ElmahIoAppender).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
-        internal static string _log4netAssemblyVersion = typeof(AppenderSkeleton).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        private static string _assemblyVersion = typeof(ElmahIoAppender).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        private static string _log4netAssemblyVersion = typeof(AppenderSkeleton).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 #else
-        internal static string _assemblyVersion = typeof(ElmahIoAppender).Assembly.GetName().Version.ToString();
-        internal static string _log4netAssemblyVersion = typeof(AppenderSkeleton).Assembly.GetName().Version.ToString();
+        private static string _assemblyVersion = typeof(ElmahIoAppender).Assembly.GetName().Version.ToString();
+        private static string _log4netAssemblyVersion = typeof(AppenderSkeleton).Assembly.GetName().Version.ToString();
 #endif
 
         private IElmahioAPI _client;
@@ -133,7 +133,7 @@ namespace Elmah.Io.Log4Net
 
         private DateTimeOffset? DateTimeToOffset(DateTime timeStampUtc)
         {
-            return timeStampUtc == null || timeStampUtc == DateTime.MinValue ? null : (DateTimeOffset?)timeStampUtc;
+            return timeStampUtc == DateTime.MinValue ? null : (DateTimeOffset?)timeStampUtc;
         }
 
         private IList<Item> QueryString(LoggingEvent loggingEvent)
@@ -159,20 +159,17 @@ namespace Elmah.Io.Log4Net
         private IList<Item> Items(LoggingEvent loggingEvent, string key)
         {
             var properties = loggingEvent.GetProperties();
-            if (properties == null) return null;
-            foreach (var property in properties.GetKeys())
+            if (properties == null) return new List<Item>();
+            foreach (var property in properties.GetKeys().Where(property => property.ToLower().Equals(key)))
             {
-                if (property.ToLower().Equals(key))
+                var value = properties[property];
+                if (value is Dictionary<string, string> values)
                 {
-                    var value = properties[property];
-                    if (value is Dictionary<string, string> values)
-                    {
-                        return values.Select(v => new Item(v.Key, v.Value)).ToList();
-                    }
+                    return values.Select(v => new Item(v.Key, v.Value)).ToList();
                 }
             }
 
-            return null;
+            return new List<Item>();
         }
 
         private string CorrelationId(PropertiesDictionary properties)
