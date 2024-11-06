@@ -314,6 +314,10 @@ namespace Elmah.Io.Log4Net
                     Timeout = new TimeSpan(0, 0, 5),
                     UserAgent = UserAgent(),
                 });
+                api.Messages.OnMessageFail += (sender, args) =>
+                {
+                    LogLog.Error(GetType(), args.Error.Message, args.Error);
+                };
                 _client = api;
             }
         }
