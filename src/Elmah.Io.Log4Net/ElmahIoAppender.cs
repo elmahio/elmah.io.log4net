@@ -45,7 +45,7 @@ namespace Elmah.Io.Log4Net
         private const string TypeKey = "type";
         private const string CorrelationIdKey = "correlationid";
         private const string CategoryKey = "category";
-        private readonly string[] knownKeys = new[] { HostnameKey, QueryStringKey, FormKey, CookiesKey, ServerVariablesKey, StatusCodeKey, UrlKey, VersionKey, MethodKey, SourceKey, UserKey, ApplicationKey, TypeKey, CorrelationIdKey, CategoryKey };
+        private readonly string[] knownKeys = [HostnameKey, QueryStringKey, FormKey, CookiesKey, ServerVariablesKey, StatusCodeKey, UrlKey, VersionKey, MethodKey, SourceKey, UserKey, ApplicationKey, TypeKey, CorrelationIdKey, CategoryKey];
 
         /// <summary>
         /// The configured IElmahioAPI client to use for communicating with the elmah.io API. The appender create the client
@@ -67,6 +67,7 @@ namespace Elmah.Io.Log4Net
         /// <summary>
         /// The ID of the log to store log messages in.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S2376:Write-only properties should not be used", Justification = "A property setter is required by NLog")]
         public string LogId
         {
             set
@@ -81,6 +82,7 @@ namespace Elmah.Io.Log4Net
         /// <summary>
         /// The API key to use when calling the elmah.io API. The API key must have the Messages | Write permission enabled.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S2376:Write-only properties should not be used", Justification = "A property setter is required by NLog")]
         public string ApiKey
         {
             set { _apiKey = value; }
@@ -131,35 +133,35 @@ namespace Elmah.Io.Log4Net
             _client.Messages.CreateAndNotify(_logId, message);
         }
 
-        private DateTimeOffset? DateTimeToOffset(DateTime timeStampUtc)
+        private static DateTimeOffset? DateTimeToOffset(DateTime timeStampUtc)
         {
             return timeStampUtc == DateTime.MinValue ? null : (DateTimeOffset?)timeStampUtc;
         }
 
-        private IList<Item> QueryString(LoggingEvent loggingEvent)
+        private static IList<Item> QueryString(LoggingEvent loggingEvent)
         {
             return Items(loggingEvent, QueryStringKey);
         }
 
-        private IList<Item> Form(LoggingEvent loggingEvent)
+        private static IList<Item> Form(LoggingEvent loggingEvent)
         {
             return Items(loggingEvent, FormKey);
         }
 
-        private IList<Item> Cookies(LoggingEvent loggingEvent)
+        private static IList<Item> Cookies(LoggingEvent loggingEvent)
         {
             return Items(loggingEvent, CookiesKey);
         }
 
-        private IList<Item> ServerVariables(LoggingEvent loggingEvent)
+        private static IList<Item> ServerVariables(LoggingEvent loggingEvent)
         {
             return Items(loggingEvent, ServerVariablesKey);
         }
 
-        private IList<Item> Items(LoggingEvent loggingEvent, string key)
+        private static IList<Item> Items(LoggingEvent loggingEvent, string key)
         {
             var properties = loggingEvent.GetProperties();
-            if (properties == null) return new List<Item>();
+            if (properties == null) return [];
             foreach (var property in properties.GetKeys().Where(property => property.ToLower().Equals(key)))
             {
                 var value = properties[property];
@@ -169,15 +171,15 @@ namespace Elmah.Io.Log4Net
                 }
             }
 
-            return new List<Item>();
+            return [];
         }
 
-        private string CorrelationId(PropertiesDictionary properties)
+        private static string CorrelationId(PropertiesDictionary properties)
         {
             return String(properties, CorrelationIdKey);
         }
 
-        private int? StatusCode(PropertiesDictionary properties)
+        private static int? StatusCode(PropertiesDictionary properties)
         {
             var statusCode = String(properties, StatusCodeKey);
             if (string.IsNullOrWhiteSpace(statusCode)) return null;
@@ -185,36 +187,36 @@ namespace Elmah.Io.Log4Net
             return code;
         }
 
-        private string Url(PropertiesDictionary properties)
+        private static string Url(PropertiesDictionary properties)
         {
             return String(properties, UrlKey);
         }
 
-        private string Version(PropertiesDictionary properties)
+        private static string Version(PropertiesDictionary properties)
         {
             return String(properties, VersionKey);
         }
 
-        private string Method(PropertiesDictionary properties)
+        private static string Method(PropertiesDictionary properties)
         {
             return String(properties, MethodKey);
         }
 
-        private string Source(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private static string Source(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var source = String(properties, SourceKey);
             if (!string.IsNullOrWhiteSpace(source)) return source;
             return loggingEvent.ExceptionObject?.GetBaseException().Source;
         }
 
-        private string Category(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private static string Category(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var category = String(properties, CategoryKey);
             if (!string.IsNullOrWhiteSpace(category)) return category;
             return loggingEvent.LoggerName;
         }
 
-        private string User(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private static string User(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var user = String(properties, UserKey);
             if (!string.IsNullOrWhiteSpace(user)) return user;
@@ -233,14 +235,14 @@ namespace Elmah.Io.Log4Net
             return null;
         }
 
-        private string Type(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private static string Type(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var type = String(properties, TypeKey);
             if (!string.IsNullOrWhiteSpace(type)) return type;
             return loggingEvent.ExceptionObject?.GetBaseException().GetType().FullName;
         }
 
-        private string Hostname(PropertiesDictionary properties)
+        private static string Hostname(PropertiesDictionary properties)
         {
             var hostname = String(properties, HostnameKey);
             if (!string.IsNullOrWhiteSpace(hostname)) return hostname;
@@ -272,7 +274,7 @@ namespace Elmah.Io.Log4Net
             return items;
         }
 
-        private Severity? LevelToSeverity(Level level)
+        private static Severity? LevelToSeverity(Level level)
         {
             if (level == Level.Emergency) return Severity.Fatal;
             if (level == Level.Fatal) return Severity.Fatal;
@@ -293,6 +295,7 @@ namespace Elmah.Io.Log4Net
             return Severity.Information;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S6605:Collection-specific \"Exists\" method should be used instead of the \"Any\" extension", Justification = "Exists will require ToList first")]
         private static string String(PropertiesDictionary properties, string name)
         {
             if (properties == null || properties.Count == 0) return null;
