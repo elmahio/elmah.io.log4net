@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -10,6 +11,7 @@ using Elmah.Io.Client;
 using log4net.Appender;
 using log4net.Core;
 using log4net.Util;
+using AssemblyInfo = Elmah.Io.Client.AssemblyInfo;
 
 namespace Elmah.Io.Log4Net
 {
@@ -19,11 +21,13 @@ namespace Elmah.Io.Log4Net
     public class ElmahIoAppender : AppenderSkeleton
     {
 #if NETSTANDARD
-        private static string _assemblyVersion = typeof(ElmahIoAppender).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
-        private static string _log4netAssemblyVersion = typeof(AppenderSkeleton).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        private static readonly string _assemblyVersion = typeof(ElmahIoAppender).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        private static readonly string _elmahIoClientVersion = typeof(IElmahioAPI).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        private static readonly string _log4netAssemblyVersion = typeof(AppenderSkeleton).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 #else
-        private static string _assemblyVersion = typeof(ElmahIoAppender).Assembly.GetName().Version.ToString();
-        private static string _log4netAssemblyVersion = typeof(AppenderSkeleton).Assembly.GetName().Version.ToString();
+        private static readonly string _assemblyVersion = typeof(ElmahIoAppender).Assembly.GetName().Version.ToString();
+        private static readonly string _elmahIoClientVersion = typeof(IElmahioAPI).Assembly.GetName().Version.ToString();
+        private static readonly string _log4netAssemblyVersion = typeof(AppenderSkeleton).Assembly.GetName().Version.ToString();
 #endif
 
         private IElmahioAPI _client;
@@ -96,7 +100,7 @@ namespace Elmah.Io.Log4Net
         ///<inheritdoc/>
         public override void ActivateOptions()
         {
-            EnsureClient();
+            CreateInstallation();
         }
 
         /// <summary>
@@ -329,6 +333,61 @@ namespace Elmah.Io.Log4Net
                 .Append(" ")
                 .Append(new ProductInfoHeaderValue(new ProductHeaderValue("log4net", _log4netAssemblyVersion)).ToString())
                 .ToString();
+        }
+
+        private void CreateInstallation()
+        {
+            EnsureClient();
+
+            try
+            {
+                var logger = new LoggerInfo
+                {
+                    Type = "Elmah.Io.Log4Net",
+                    Properties =
+                    [
+                        new Item("Layout", Layout?.ToString()),
+                        new Item("Name", Name),
+                        new Item("Threshold", Threshold?.ToString()),
+                    ],
+                    Assemblies =
+                    [
+                        new AssemblyInfo { Name = "Elmah.Io.Log4Net", Version = _assemblyVersion, },
+                        new AssemblyInfo { Name = "Elmah.Io.Client", Version = _elmahIoClientVersion, },
+                        new AssemblyInfo { Name = "log4net", Version = _log4netAssemblyVersion, }
+                    ],
+                    ConfigFiles = [],
+                };
+
+                var installation = new CreateInstallation
+                {
+                    Type = ApplicationInfoHelper.GetApplicationType(),
+                    Name = Application,
+                    Loggers = [logger]
+                };
+
+#if NETSTANDARD
+                var location = typeof(ElmahIoAppender).GetTypeInfo().Assembly.ToString();
+#else
+                var location = typeof(ElmahIoAppender).Assembly.Location;
+#endif
+                var configFilePath = Path.Combine(Path.GetDirectoryName(location), "log4net.config");
+                if (File.Exists(configFilePath))
+                {
+                    logger.ConfigFiles.Add(new ConfigFile
+                    {
+                        Name = Path.GetFileName(configFilePath),
+                        Content = File.ReadAllText(configFilePath),
+                        ContentType = "text/xml",
+                    });
+                }
+
+                _client.Installations.Create(_logId.ToString(), installation);
+            }
+            catch (Exception ex)
+            {
+                LogLog.Error(GetType(), ex.Message, ex);
+            }
         }
     }
 }
