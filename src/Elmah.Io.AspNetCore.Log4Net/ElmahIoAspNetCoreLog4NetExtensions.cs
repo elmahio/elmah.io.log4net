@@ -1,6 +1,8 @@
 ﻿using Elmah.Io.AspNetCore.Log4Net;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.AspNetCore.Builder
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 {
     /// <summary>
     /// Extension methods to help install the elmah.io log4net middleware in ASP.NET Core.
