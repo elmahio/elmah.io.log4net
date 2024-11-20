@@ -378,7 +378,7 @@ namespace Elmah.Io.Log4Net
                     {
                         Name = Path.GetFileName(configFilePath),
                         Content = File.ReadAllText(configFilePath),
-                        ContentType = "text/xml",
+                        ContentType = "application/xml",
                     });
                 }
 
