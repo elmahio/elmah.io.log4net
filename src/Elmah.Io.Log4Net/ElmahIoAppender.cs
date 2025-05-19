@@ -171,7 +171,7 @@ namespace Elmah.Io.Log4Net
                 var value = properties[property];
                 if (value is Dictionary<string, string> values)
                 {
-                    return values.Select(v => new Item(v.Key, v.Value)).ToList();
+                    return [.. values.Select(v => new Item(v.Key, v.Value))];
                 }
             }
 
@@ -299,7 +299,6 @@ namespace Elmah.Io.Log4Net
             return Severity.Information;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S6605:Collection-specific \"Exists\" method should be used instead of the \"Any\" extension", Justification = "Exists will require ToList first")]
         private static string String(PropertiesDictionary properties, string name)
         {
             if (properties == null || properties.Count == 0) return null;
