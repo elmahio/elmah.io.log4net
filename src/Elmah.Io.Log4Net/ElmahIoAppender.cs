@@ -356,6 +356,7 @@ namespace Elmah.Io.Log4Net
                         new AssemblyInfo { Name = "log4net", Version = _log4netAssemblyVersion, }
                     ],
                     ConfigFiles = [],
+                    EnvironmentVariables = [],
                 };
 
                 var installation = new CreateInstallation
@@ -380,6 +381,13 @@ namespace Elmah.Io.Log4Net
                         ContentType = "application/xml",
                     });
                 }
+
+                // Include environment variables from all possible sources since we don't know in which context log4net is being executed.
+                EnvironmentVariablesHelper.GetElmahIoAppSettingsEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
+                EnvironmentVariablesHelper.GetAspNetCoreEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
+                EnvironmentVariablesHelper.GetDotNetEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
+                EnvironmentVariablesHelper.GetAzureEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
+                EnvironmentVariablesHelper.GetAzureFunctionsEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
 
                 _client.Installations.Create(_logId.ToString(), installation);
             }
