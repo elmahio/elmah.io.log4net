@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
-#if NETSTANDARD
 using System.Reflection;
-#endif
 using Elmah.Io.Client;
 using log4net.Appender;
 using log4net.Core;
@@ -20,19 +18,13 @@ namespace Elmah.Io.Log4Net
     /// </summary>
     public class ElmahIoAppender : AppenderSkeleton
     {
-#if NETSTANDARD
-        private static readonly string _assemblyVersion = typeof(ElmahIoAppender).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
-        private static readonly string _elmahIoClientVersion = typeof(IElmahioAPI).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
-        private static readonly string _log4netAssemblyVersion = typeof(AppenderSkeleton).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
-#else
-        private static readonly string _assemblyVersion = typeof(ElmahIoAppender).Assembly.GetName().Version.ToString();
-        private static readonly string _elmahIoClientVersion = typeof(IElmahioAPI).Assembly.GetName().Version.ToString();
-        private static readonly string _log4netAssemblyVersion = typeof(AppenderSkeleton).Assembly.GetName().Version.ToString();
-#endif
+        private static readonly string assemblyVersion = typeof(ElmahIoAppender).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        private static readonly string elmahIoClientVersion = typeof(IElmahioAPI).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+        private static readonly string log4netAssemblyVersion = typeof(AppenderSkeleton).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 
-        private IElmahioAPI _client;
-        private Guid _logId;
-        private string _apiKey;
+        private IElmahioAPI client;
+        private Guid logId;
+        private string apiKey;
 
         private const string HostnameKey = "hostname";
         private const string QueryStringKey = "querystring";
@@ -60,11 +52,11 @@ namespace Elmah.Io.Log4Net
             get
             {
                 EnsureClient();
-                return _client;
+                return client;
             }
             set
             {
-                _client = value;
+                client = value;
             }
         }
 
@@ -76,7 +68,7 @@ namespace Elmah.Io.Log4Net
         {
             set
             {
-                if (!Guid.TryParse(value, out _logId))
+                if (!Guid.TryParse(value, out logId))
                 {
                     throw new ArgumentException("LogId is not a GUID");
                 }
@@ -89,7 +81,7 @@ namespace Elmah.Io.Log4Net
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S2376:Write-only properties should not be used", Justification = "A property setter is required by NLog")]
         public string ApiKey
         {
-            set { _apiKey = value; }
+            set { apiKey = value; }
         }
 
         /// <summary>
@@ -134,7 +126,7 @@ namespace Elmah.Io.Log4Net
                 Form = Form(loggingEvent),
                 QueryString = QueryString(loggingEvent),
             };
-            _client.Messages.CreateAndNotify(_logId, message);
+            client.Messages.CreateAndNotify(logId, message);
         }
 
         private static DateTimeOffset? DateTimeToOffset(DateTime timeStampUtc)
@@ -252,10 +244,8 @@ namespace Elmah.Io.Log4Net
             if (!string.IsNullOrWhiteSpace(hostname)) return hostname;
             var log4netHostname = "log4net:HostName";
             if (properties != null && properties.Count > 0 && properties.Contains(log4netHostname)) return properties[log4netHostname].ToString();
-#if !NETSTANDARD1_3
             var machineName = Environment.MachineName;
             if (!string.IsNullOrWhiteSpace(machineName)) return machineName;
-#endif
             var computerName = Environment.GetEnvironmentVariable("COMPUTERNAME");
             if (!string.IsNullOrWhiteSpace(computerName)) return computerName;
             return null;
@@ -310,9 +300,9 @@ namespace Elmah.Io.Log4Net
 
         private void EnsureClient()
         {
-            if (_client == null)
+            if (client == null)
             {
-                var api = ElmahioAPI.Create(_apiKey, new ElmahIoOptions
+                var api = ElmahioAPI.Create(apiKey, new ElmahIoOptions
                 {
                     Timeout = new TimeSpan(0, 0, 5),
                     UserAgent = UserAgent(),
@@ -321,16 +311,16 @@ namespace Elmah.Io.Log4Net
                 {
                     LogLog.Error(GetType(), args.Error.Message, args.Error);
                 };
-                _client = api;
+                client = api;
             }
         }
 
         private static string UserAgent()
         {
             return new StringBuilder()
-                .Append(new ProductInfoHeaderValue(new ProductHeaderValue("Elmah.Io.Log4Net", _assemblyVersion)).ToString())
+                .Append(new ProductInfoHeaderValue(new ProductHeaderValue("Elmah.Io.Log4Net", assemblyVersion)).ToString())
                 .Append(" ")
-                .Append(new ProductInfoHeaderValue(new ProductHeaderValue("log4net", _log4netAssemblyVersion)).ToString())
+                .Append(new ProductInfoHeaderValue(new ProductHeaderValue("log4net", log4netAssemblyVersion)).ToString())
                 .ToString();
         }
 
@@ -351,9 +341,9 @@ namespace Elmah.Io.Log4Net
                     ],
                     Assemblies =
                     [
-                        new AssemblyInfo { Name = "Elmah.Io.Log4Net", Version = _assemblyVersion, },
-                        new AssemblyInfo { Name = "Elmah.Io.Client", Version = _elmahIoClientVersion, },
-                        new AssemblyInfo { Name = "log4net", Version = _log4netAssemblyVersion, }
+                        new AssemblyInfo { Name = "Elmah.Io.Log4Net", Version = assemblyVersion, },
+                        new AssemblyInfo { Name = "Elmah.Io.Client", Version = elmahIoClientVersion, },
+                        new AssemblyInfo { Name = "log4net", Version = log4netAssemblyVersion, }
                     ],
                     ConfigFiles = [],
                     EnvironmentVariables = [],
@@ -366,11 +356,7 @@ namespace Elmah.Io.Log4Net
                     Loggers = [logger]
                 };
 
-#if NETSTANDARD
                 var location = typeof(ElmahIoAppender).GetTypeInfo().Assembly.ToString();
-#else
-                var location = typeof(ElmahIoAppender).Assembly.Location;
-#endif
                 var configFilePath = Path.Combine(Path.GetDirectoryName(location), "log4net.config");
                 if (File.Exists(configFilePath))
                 {
@@ -389,7 +375,7 @@ namespace Elmah.Io.Log4Net
                 EnvironmentVariablesHelper.GetAzureEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
                 EnvironmentVariablesHelper.GetAzureFunctionsEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
 
-                _client.Installations.Create(_logId.ToString(), installation);
+                client.Installations.Create(logId.ToString(), installation);
             }
             catch (Exception ex)
             {

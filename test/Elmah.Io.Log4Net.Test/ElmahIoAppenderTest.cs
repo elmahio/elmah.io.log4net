@@ -11,19 +11,19 @@ namespace Elmah.Io.Log4Net.Test
 {
     public class ElmahIoAppenderTest
     {
-        IElmahioAPI _clientMock;
-        IMessagesClient _messagesClientMock;
-        ElmahIoAppender _sut;
+        IElmahioAPI clientMock;
+        IMessagesClient messagesClientMock;
+        ElmahIoAppender sut;
 
         [SetUp]
         public void SetUp()
         {
-            _clientMock = Substitute.For<IElmahioAPI>();
-            _messagesClientMock = Substitute.For<IMessagesClient>();
-            _clientMock.Messages.Returns(_messagesClientMock);
-            _sut = new ElmahIoAppender
+            clientMock = Substitute.For<IElmahioAPI>();
+            messagesClientMock = Substitute.For<IMessagesClient>();
+            clientMock.Messages.Returns(messagesClientMock);
+            sut = new ElmahIoAppender
             {
-                Client = _clientMock,
+                Client = clientMock,
                 Name = "TestLogger",
             };
         }
@@ -33,7 +33,7 @@ namespace Elmah.Io.Log4Net.Test
         {
             // Arrange
             CreateMessage message = null;
-            _messagesClientMock
+            messagesClientMock
                 .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
                 .Do(x => message = x.Arg<CreateMessage>());
 
@@ -50,26 +50,28 @@ namespace Elmah.Io.Log4Net.Test
             var correlationId = RandString();
             var category = RandString();
 
-            var properties = new PropertiesDictionary();
-            properties["hostname"] = hostname;
-            properties["type"] = type;
-            properties["application"] = application;
-            properties["user"] = user;
-            properties["source"] = source;
-            properties["method"] = method;
-            properties["version"] = version;
-            properties["url"] = url;
-            properties["statuscode"] = statuscode;
-            properties["correlationid"] = correlationId;
-            properties["category"] = category;
-            properties["servervariables"] = new Dictionary<string, string> { { "serverVariableKey", "serverVariableValue" } };
-            properties["cookies"] = new Dictionary<string, string> { { "cookiesKey", "cookiesValue" } };
-            properties["form"] = new Dictionary<string, string> { { "formKey", "formValue" } };
-            properties["querystring"] = new Dictionary<string, string> { { "queryStringKey", "queryStringValue" } };
+            var properties = new PropertiesDictionary
+            {
+                ["hostname"] = hostname,
+                ["type"] = type,
+                ["application"] = application,
+                ["user"] = user,
+                ["source"] = source,
+                ["method"] = method,
+                ["version"] = version,
+                ["url"] = url,
+                ["statuscode"] = statuscode,
+                ["correlationid"] = correlationId,
+                ["category"] = category,
+                ["servervariables"] = new Dictionary<string, string> { { "serverVariableKey", "serverVariableValue" } },
+                ["cookies"] = new Dictionary<string, string> { { "cookiesKey", "cookiesValue" } },
+                ["form"] = new Dictionary<string, string> { { "formKey", "formValue" } },
+                ["querystring"] = new Dictionary<string, string> { { "queryStringKey", "queryStringValue" } }
+            };
             var data = LoggingEventData(now, properties);
 
             // Act
-            _sut.DoAppend(new LoggingEvent(data));
+            sut.DoAppend(new LoggingEvent(data));
 
             // Assert
             Assert.That(message, Is.Not.Null);
@@ -96,10 +98,10 @@ namespace Elmah.Io.Log4Net.Test
             // Arrange
 
             // Act
-            _sut.DoAppend(new LoggingEvent(new LoggingEventData()));
+            sut.DoAppend(new LoggingEvent(new LoggingEventData()));
 
             // Assert
-            _messagesClientMock.Received().CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>());
+            messagesClientMock.Received().CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>());
         }
 
         [Test]
@@ -107,7 +109,7 @@ namespace Elmah.Io.Log4Net.Test
         {
             // Arrange
             CreateMessage message = null;
-            _messagesClientMock
+            messagesClientMock
                 .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
                 .Do(x => message = x.Arg<CreateMessage>());
 
@@ -118,7 +120,7 @@ namespace Elmah.Io.Log4Net.Test
             var data = LoggingEventData(now, properties);
 
             // Act
-            _sut.DoAppend(new LoggingEvent(data));
+            sut.DoAppend(new LoggingEvent(data));
 
             // Assert
             Assert.That(message, Is.Not.Null);
@@ -140,14 +142,14 @@ namespace Elmah.Io.Log4Net.Test
         {
             // Arrange
             CreateMessage message = null;
-            _messagesClientMock
+            messagesClientMock
                 .When(x => x.CreateAndNotify(Arg.Any<Guid>(), Arg.Any<CreateMessage>()))
                 .Do(x => message = x.Arg<CreateMessage>());
 
             var loggingEvent = new LoggingEvent(null, null, null, Level.Error, "A message", new ArgumentException("Oh no"));
 
             // Act
-            _sut.DoAppend(loggingEvent);
+            sut.DoAppend(loggingEvent);
 
             // Assert
             Assert.That(message, Is.Not.Null);
@@ -160,8 +162,10 @@ namespace Elmah.Io.Log4Net.Test
 
         private static PropertiesDictionary Properties(string hostname)
         {
-            var properties = new PropertiesDictionary();
-            properties["log4net:HostName"] = hostname;
+            var properties = new PropertiesDictionary
+            {
+                ["log4net:HostName"] = hostname
+            };
             return properties;
         }
 

@@ -3,11 +3,10 @@
   <PropertyGroup>
     <Description>log4net appender for elmah.io</Description>
     <Authors>elmah.io</Authors>
-    <TargetFrameworks>net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Elmah.Io.Log4Net</AssemblyName>
     <PackageId>Elmah.Io.Log4Net</PackageId>
     <PackageTags>Error;Exception;Reporing;Management;Logging;ELMAH;Diagnostics;Tracing;log4net</PackageTags>
-    <PackageIconUrl>https://secure.gravatar.com/avatar/5c4cb3646528821117abde6d2d5ee22d?s=64</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>https://elmah.io</PackageProjectUrl>
     <RepositoryUrl>https://github.com/elmahio/elmah.io.log4net</RepositoryUrl>
@@ -19,7 +18,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <EnablePackageValidation>true</EnablePackageValidation>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <!-- SourceLink -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -40,8 +39,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elmah.Io.Client" Version="[5.3.131,6)" />
-    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Elmah.Io.Client" Version="[6.0.133-pre,7)" />
+    <PackageReference Include="log4net" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>

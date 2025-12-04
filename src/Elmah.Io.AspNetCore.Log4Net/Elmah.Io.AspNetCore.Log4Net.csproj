@@ -3,11 +3,10 @@
   <PropertyGroup>
     <Description>log4net decorator for ASP.NET Core and elmah.io</Description>
     <Authors>elmah.io</Authors>
-    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>Elmah.Io.AspNetCore.Log4Net</AssemblyName>
     <PackageId>Elmah.Io.AspNetCore.Log4Net</PackageId>
     <PackageTags>Error;Exception;Reporing;Management;Logging;ELMAH;Diagnostics;Tracing;log4net;aspnetcore</PackageTags>
-    <PackageIconUrl>https://secure.gravatar.com/avatar/5c4cb3646528821117abde6d2d5ee22d?s=64</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>https://elmah.io</PackageProjectUrl>
     <RepositoryUrl>https://github.com/elmahio/elmah.io.log4net</RepositoryUrl>
@@ -18,7 +17,7 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnablePackageValidation>true</EnablePackageValidation>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <!-- SourceLink -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -34,15 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.15" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net8.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="log4net" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
