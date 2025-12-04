@@ -22,6 +22,9 @@ jobs:
           9.0.x
           10.0.x
 
+    - name: Restore NuGet packages in .NET Framework sample
+      run: nuget restore samples/Elmah.Io.Log4Net.Console/Elmah.Io.Log4Net.Console.csproj
+
     - name: Install dependencies
       run: dotnet restore
 
