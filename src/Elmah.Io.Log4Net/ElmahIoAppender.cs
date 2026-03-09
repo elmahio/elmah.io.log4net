@@ -10,6 +10,7 @@ using log4net.Appender;
 using log4net.Core;
 using log4net.Util;
 using AssemblyInfo = Elmah.Io.Client.AssemblyInfo;
+using log4net.Layout;
 
 namespace Elmah.Io.Log4Net
 {
@@ -22,9 +23,9 @@ namespace Elmah.Io.Log4Net
         private static readonly string elmahIoClientVersion = typeof(IElmahioAPI).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
         private static readonly string log4netAssemblyVersion = typeof(AppenderSkeleton).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 
-        private IElmahioAPI client;
+        private IElmahioAPI? client;
         private Guid logId;
-        private string apiKey;
+        private string? apiKey;
 
         private const string HostnameKey = "hostname";
         private const string QueryStringKey = "querystring";
@@ -52,7 +53,7 @@ namespace Elmah.Io.Log4Net
             get
             {
                 EnsureClient();
-                return client;
+                return client!;
             }
             set
             {
@@ -87,7 +88,7 @@ namespace Elmah.Io.Log4Net
         /// <summary>
         /// Set an application name on all log messages.
         /// </summary>
-        public string Application { get; set; }
+        public string? Application { get; set; }
 
         ///<inheritdoc/>
         public override void ActivateOptions()
@@ -102,10 +103,11 @@ namespace Elmah.Io.Log4Net
         {
             EnsureClient();
 
+            var title = Layout == null ? loggingEvent.RenderedMessage : RenderLoggingEvent(loggingEvent);
             var properties = loggingEvent.GetProperties();
             var message = new CreateMessage
             {
-                Title = loggingEvent.RenderedMessage,
+                Title = title,
                 Severity = LevelToSeverity(loggingEvent.Level).ToString(),
                 DateTime = DateTimeToOffset(loggingEvent.TimeStampUtc),
                 Detail = loggingEvent.ExceptionObject?.ToString(),
@@ -126,7 +128,7 @@ namespace Elmah.Io.Log4Net
                 Form = Form(loggingEvent),
                 QueryString = QueryString(loggingEvent),
             };
-            client.Messages.CreateAndNotify(logId, message);
+            client!.Messages.CreateAndNotify(logId, message);
         }
 
         private static DateTimeOffset? DateTimeToOffset(DateTime timeStampUtc)
@@ -170,7 +172,7 @@ namespace Elmah.Io.Log4Net
             return [];
         }
 
-        private static string CorrelationId(PropertiesDictionary properties)
+        private static string? CorrelationId(PropertiesDictionary properties)
         {
             return String(properties, CorrelationIdKey);
         }
@@ -183,36 +185,36 @@ namespace Elmah.Io.Log4Net
             return code;
         }
 
-        private static string Url(PropertiesDictionary properties)
+        private static string? Url(PropertiesDictionary properties)
         {
             return String(properties, UrlKey);
         }
 
-        private static string Version(PropertiesDictionary properties)
+        private static string? Version(PropertiesDictionary properties)
         {
             return String(properties, VersionKey);
         }
 
-        private static string Method(PropertiesDictionary properties)
+        private static string? Method(PropertiesDictionary properties)
         {
             return String(properties, MethodKey);
         }
 
-        private static string Source(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private static string? Source(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var source = String(properties, SourceKey);
             if (!string.IsNullOrWhiteSpace(source)) return source;
             return loggingEvent.ExceptionObject?.GetBaseException().Source;
         }
 
-        private static string Category(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private static string? Category(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var category = String(properties, CategoryKey);
             if (!string.IsNullOrWhiteSpace(category)) return category;
             return loggingEvent.LoggerName;
         }
 
-        private static string User(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private static string? User(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var user = String(properties, UserKey);
             if (!string.IsNullOrWhiteSpace(user)) return user;
@@ -221,29 +223,29 @@ namespace Elmah.Io.Log4Net
             return null;
         }
 
-        private string ResolveApplication(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private string? ResolveApplication(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var application = String(properties, ApplicationKey);
             if (!string.IsNullOrWhiteSpace(application)) return application;
             if (!string.IsNullOrWhiteSpace(Application)) return Application;
             var domain = loggingEvent.Domain;
-            if (!string.IsNullOrWhiteSpace(domain) && !domain.Equals("NOT AVAILABLE")) return domain;
+            if (!string.IsNullOrWhiteSpace(domain) && !domain!.Equals("NOT AVAILABLE")) return domain;
             return null;
         }
 
-        private static string Type(LoggingEvent loggingEvent, PropertiesDictionary properties)
+        private static string? Type(LoggingEvent loggingEvent, PropertiesDictionary properties)
         {
             var type = String(properties, TypeKey);
             if (!string.IsNullOrWhiteSpace(type)) return type;
             return loggingEvent.ExceptionObject?.GetBaseException().GetType().FullName;
         }
 
-        private static string Hostname(PropertiesDictionary properties)
+        private static string? Hostname(PropertiesDictionary properties)
         {
             var hostname = String(properties, HostnameKey);
             if (!string.IsNullOrWhiteSpace(hostname)) return hostname;
             var log4netHostname = "log4net:HostName";
-            if (properties != null && properties.Count > 0 && properties.Contains(log4netHostname)) return properties[log4netHostname].ToString();
+            if (properties != null && properties.Count > 0 && properties.Contains(log4netHostname)) return properties[log4netHostname]!.ToString();
             var machineName = Environment.MachineName;
             if (!string.IsNullOrWhiteSpace(machineName)) return machineName;
             var computerName = Environment.GetEnvironmentVariable("COMPUTERNAME");
@@ -251,13 +253,13 @@ namespace Elmah.Io.Log4Net
             return null;
         }
 
-        private List<Item> PropertiesToData(PropertiesDictionary properties, Exception exception)
+        private List<Item> PropertiesToData(PropertiesDictionary properties, Exception? exception)
         {
             var items = new List<Item>();
             foreach (var key in properties.GetKeys().Where(key => !knownKeys.Contains(key.ToLower())))
             {
                 var value = properties[key];
-                if (value != null) items.Add(new Item(key, properties[key].ToString()));
+                if (value != null) items.Add(new Item(key, properties[key]!.ToString()));
             }
 
             if (exception != null)
@@ -268,7 +270,7 @@ namespace Elmah.Io.Log4Net
             return items;
         }
 
-        private static Severity? LevelToSeverity(Level level)
+        private static Severity? LevelToSeverity(Level? level)
         {
             if (level == Level.Emergency) return Severity.Fatal;
             if (level == Level.Fatal) return Severity.Fatal;
@@ -289,7 +291,7 @@ namespace Elmah.Io.Log4Net
             return Severity.Information;
         }
 
-        private static string String(PropertiesDictionary properties, string name)
+        private static string? String(PropertiesDictionary properties, string name)
         {
             if (properties == null || properties.Count == 0) return null;
             if (!properties.GetKeys().Any(key => key.Equals(name, StringComparison.OrdinalIgnoreCase))) return null;
@@ -302,7 +304,7 @@ namespace Elmah.Io.Log4Net
         {
             if (client == null)
             {
-                var api = ElmahioAPI.Create(apiKey, new ElmahIoOptions
+                var api = ElmahioAPI.Create(apiKey!, new ElmahIoOptions
                 {
                     Timeout = new TimeSpan(0, 0, 5),
                     UserAgent = UserAgent(),
@@ -347,6 +349,7 @@ namespace Elmah.Io.Log4Net
                     ],
                     ConfigFiles = [],
                     EnvironmentVariables = [],
+                    Recommendations = [],
                 };
 
                 var installation = new CreateInstallation
@@ -375,11 +378,37 @@ namespace Elmah.Io.Log4Net
                 EnvironmentVariablesHelper.GetAzureEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
                 EnvironmentVariablesHelper.GetAzureFunctionsEnvironmentVariables().ForEach(v => logger.EnvironmentVariables.Add(v));
 
-                client.Installations.Create(logId.ToString(), installation);
+                AddRecommendations(logger);
+
+                client!.Installations.Create(logId.ToString(), installation);
             }
             catch (Exception ex)
             {
                 LogLog.Error(GetType(), ex.Message, ex);
+            }
+        }
+
+        private void AddRecommendations(LoggerInfo logger)
+        {
+            if (Layout != null)
+            {
+                string? layout = null;
+                if (Layout is PatternLayout patternLayout)
+                {
+                    layout = patternLayout.ConversionPattern;
+                }
+
+                var recommendation = new Recommendation
+                {
+                    Impact = "Low",
+                    State = "Open",
+                    Type = "Log4NetAvoidCustomLayout",
+                    Properties = []
+                };
+
+                if (!string.IsNullOrWhiteSpace(layout)) recommendation.Properties.Add(new Item("layout", layout));
+
+                logger.Recommendations.Add(recommendation);
             }
         }
     }

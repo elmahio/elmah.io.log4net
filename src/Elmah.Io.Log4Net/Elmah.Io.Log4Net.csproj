@@ -19,6 +19,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <EnablePackageValidation>true</EnablePackageValidation>
     <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
     <!-- SourceLink -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -39,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elmah.Io.Client" Version="[6.0.133-pre,7)" />
+    <PackageReference Include="Elmah.Io.Client" Version="[6.0.136-pre,7)" />
     <PackageReference Include="log4net" Version="3.0.0" />
   </ItemGroup>
 
