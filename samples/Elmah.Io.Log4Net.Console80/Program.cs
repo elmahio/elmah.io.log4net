@@ -17,8 +17,6 @@ var builder = new HostBuilder()
 
 var host = builder.Build();
 
-using (var scope = host.Services.CreateScope())
-{
-    var service = scope.ServiceProvider.GetRequiredService<Service>();
-    service.Execute();
-}
+using var scope = host.Services.CreateScope();
+var service = scope.ServiceProvider.GetRequiredService<Service>();
+service.Execute();
