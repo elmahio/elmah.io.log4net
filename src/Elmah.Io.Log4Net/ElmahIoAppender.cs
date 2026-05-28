@@ -352,6 +352,9 @@ namespace Elmah.Io.Log4Net
                     Recommendations = [],
                 };
 
+                logger.Assemblies.TryAddAssemblyIfLoaded("Elmah.Io.AspNetCore.Log4Net");
+                logger.Assemblies.TryAddExtensionAssembliesIfLoaded();
+
                 var installation = new CreateInstallation
                 {
                     Type = ApplicationInfoHelper.GetApplicationType(),
