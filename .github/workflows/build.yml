@@ -12,10 +12,10 @@ jobs:
     runs-on: windows-2025
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: |
           8.0.x
@@ -66,7 +66,7 @@ jobs:
       run: dotnet pack --configuration Release src/Elmah.Io.AspNetCore.Log4Net/Elmah.Io.AspNetCore.Log4Net.csproj /p:Version=6.0.${{ github.run_number }}-pre
 
     - name: Install dotnet-validate
-      run: dotnet tool install --global dotnet-validate --version 0.0.1-preview.537
+      run: dotnet tool install --global dotnet-validate --version 0.0.1-preview.582
 
     - name: Validate Elmah.Io.Log4Net
       run: dotnet-validate package local src/Elmah.Io.Log4Net/bin/Release/Elmah.Io.Log4Net.6.0.${{ github.run_number }}-pre.nupkg
