@@ -383,7 +383,7 @@ namespace Elmah.Io.Log4Net
 
                 AddRecommendations(logger);
 
-                client!.Installations.Create(logId.ToString(), installation);
+                client!.Installations.CreateAndNotify(logId, installation);
             }
             catch (Exception ex)
             {
